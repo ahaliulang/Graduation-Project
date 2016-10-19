@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/category_scroll_layout">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.app.graduationproject.view.ImageCycleView
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+        </com.app.graduationproject.view.ImageCycleView>
+
+        <GridView
+            android:id="@+id/gview"
+            android:paddingTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="3"
+            android:stretchMode="columnWidth"
+            ></GridView>
+        <!--android:numColumns="auto_fit"-->
+        <!--android:columnWidth="80dp"-->
+    </LinearLayout>
+
+</ScrollView>
