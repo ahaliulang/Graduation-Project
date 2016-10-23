@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/first_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView
+        android:id="@+id/video_detail_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="内科学"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/video_detail_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="20sp"
+        android:text="讲师:钟南山"
+        />
+
+    <TextView
+        android:id="@+id/video_detail_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:singleLine="true"
+        android:textSize="18sp"
+        android:text="内科学是临床医学的一门学科，
+                是其一个重要组成部分。 内科学包括的范围，
+                涉及人体 各系统和器官的生理和病理过程，
+                疾病发生的原因， 发生发展的过程，
+                 诊断方法和防治措施。 内科学的内容包括呼吸、
+                 循环、 消化、 泌尿、 血液、 内分泌系统及代谢、
+                  营养、 风湿等常见 疾病以及理化因素所致的疾病。
+                  由于其涉及面广、 整体性强， 与基础各学科及临
+                  床各科关系 密切， 所阐述内容在临床医学的理论
+                  和实践中有普遍意义， 因而是临床各科的基础。
+                  内科学 教学包括理论课、临床见习和临床实习三部分内科学是临床医学的一门学科，
+                是其一个重要组成部分。 内科学包括的范围，
+                涉及人体 各系统和器官的生理和病理过程，
+                疾病发生的原因， 发生发展的过程，
+                 诊断方法和防治措施。 内科学的内容包括呼吸、
+                 循环、 消化、 泌尿、 血液、 内分泌系统及代谢、
+                  营养、 风湿等常见 疾病以及理化因素所致的疾病。
+                  由于其涉及面广、 整体性强， 与基础各学科及临
+                  床各科关系 密切， 所阐述内容在临床医学的理论
+                  和实践中有普遍意义， 因而是临床各科的基础。
+                  内科学 教学包括理论课、临床见习和临床实习三部分内科学是临床医学的一门学科，
+                是其一个重要组成部分。 内科学包括的范围，
+                涉及人体 各系统和器官的生理和病理过程，
+                疾病发生的原因， 发生发展的过程，
+                 诊断方法和防治措施。 内科学的内容包括呼吸、
+                 循环、 消化、 泌尿、 血液、 内分泌系统及代谢、
+                  营养、 风湿等常见 疾病以及理化因素所致的疾病。
+                  由于其涉及面广、 整体性强， 与基础各学科及临
+                  床各科关系 密切， 所阐述内容在临床医学的理论
+                  和实践中有普遍意义， 因而是临床各科的基础。
+                  内科学 教学包括理论课、临床见习和临床实习三部分
+                  。"
+        />
+    <ImageView
+        android:id="@+id/click"
+        android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+        android:tag="1"
+        android:clickable="true"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:text="课程目录"
+        android:layout_gravity="center"
+        android:textSize="22sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <include
+        layout="@layout/video_list_recyclerview"/>
+    <Button
+        android:id="@+id/more"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorDeepGreen"
+        android:text="查看全部课程"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/more_button_style"/>
+</LinearLayout>

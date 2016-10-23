@@ -36,6 +36,10 @@
         </com.app.graduationproject.view.ImageCycleView>-->
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:background="@color/colorGray"
+        android:layout_height="0.5dp"/>
     <LinearLayout
         android:id="@+id/main_menu"
         android:layout_width="match_parent"

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="80dp">
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:padding="5dp"
+        android:src="@drawable/test"
+        android:scaleType="fitXY"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:text="内科学"/>
+        <TextView
+            android:paddingTop="10dp"
+            android:layout_below="@+id/title"
+            android:id="@+id/video_clip"
+            android:layout_alignLeft="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="共48集"/>
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="1dp"
+            android:layout_height="16dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/video_clip"
+            android:layout_alignBottom="@+id/video_clip"
+            android:layout_gravity="center"
+            android:background="@color/colorGray" />
+        <TextView
+            android:id="@+id/people"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/divider1"
+            android:layout_alignBottom="@+id/video_clip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="共24人学习"/>
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="1dp"
+            android:layout_height="16dp"
+            android:layout_marginLeft="5dp"
+            android:layout_alignBottom="@+id/video_clip"
+            android:layout_toRightOf="@+id/people"
+            android:layout_gravity="center"
+            android:background="@color/colorGray" />
+        <TextView
+            android:id="@+id/click"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/divider2"
+            android:layout_alignBottom="@+id/video_clip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="共24人学习"/>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,6 +1,9 @@
 package com.app.graduationproject;
 
+
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -10,6 +13,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.graduationproject.fragment.CategoryFragment;
+import com.app.graduationproject.fragment.HomeFragment;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private Toolbar mToolbar;
     private TextView mHome;
@@ -17,10 +23,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mMy;
     private long mExitTime = 0;
     private boolean mIsSearching;//搜索框是否出现，true为出现，false为隐藏
+    private HomeFragment mHomeFragment;
+    private CategoryFragment mCategoryFragment;
+    private FragmentManager fragmentManager;//碎片管理器
+    private FragmentTransaction transaction;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        fragmentManager = getSupportFragmentManager();
         initView();
     }
 
@@ -36,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mMy.setOnClickListener(this);
         //设置默认第一个菜单按钮为选中状态
         mHome.setTextColor(getResources().getColor(R.color.colorBlack));
+        setChoice(1);
 
         /*final ImageCycleView imageCycleView = (ImageCycleView) findViewById(R.id.icv_topView);
         List<ImageCycleView.ImageInfo> list = new ArrayList<ImageCycleView.ImageInfo>();
@@ -84,6 +96,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+    private void setChoice(int currentItem){
+        transaction = fragmentManager.beginTransaction();
+        hideFragments(transaction);
+        clearChoice();
+        switch (currentItem){
+            case 1:
+                mHome.setTextColor(getResources().getColor(R.color.colorBlack));
+                if(mHomeFragment == null){
+                    mHomeFragment = new HomeFragment();
+                    transaction.add(R.id.main_ll_fragment,mHomeFragment);
+                }else {
+                    transaction.show(mHomeFragment);
+                }
+                break;
+            case 2:
+                mCategory.setTextColor(getResources().getColor(R.color.colorBlack));
+                if(mCategoryFragment == null){
+                    mCategoryFragment = new CategoryFragment();
+                    transaction.add(R.id.main_ll_fragment,mCategoryFragment);
+                }else {
+                    transaction.show(mCategoryFragment);
+                }
+                break;
+            case 3:
+                mMy.setTextColor(getResources().getColor(R.color.colorBlack));
+                Toast.makeText(MainActivity.this,"你点击了3",Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+        transaction.commit();//提交事物
+    }
+
+
+    private void hideFragments(FragmentTransaction transaction){
+        if(mHomeFragment != null){
+            transaction.hide(mHomeFragment);
+        }
+        if(mCategoryFragment != null){
+            transaction.hide(mCategoryFragment);
+        }
+    }
 
     //按两次返回键退出程序
     @Override
@@ -99,25 +153,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onKeyDown(keyCode, event);
     }
 
-
-
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 
     //点击底部菜单栏
     @Override
     public void onClick(View view) {
-        clearChoice();
         switch (view.getId()){
             case R.id.home:
-                mHome.setTextColor(getResources().getColor(R.color.colorBlack));
-                Toast.makeText(MainActivity.this,"1",Toast.LENGTH_SHORT).show();
+                setChoice(1);
                 break;
             case R.id.category:
-                mCategory.setTextColor(getResources().getColor(R.color.colorBlack));
-                Toast.makeText(MainActivity.this,"2",Toast.LENGTH_SHORT).show();
+                setChoice(2);
                 break;
             case R.id.my:
-                mMy.setTextColor(getResources().getColor(R.color.colorBlack));
-                Toast.makeText(MainActivity.this,"3",Toast.LENGTH_SHORT).show();
+                setChoice(3);
                 break;
             default:
                 break;

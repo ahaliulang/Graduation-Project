@@ -10,7 +10,10 @@
     <color name="secondaryText">#727272</color>
     <color name="icons">#FFFFFF</color>
     <color name="colorWhite">#FFFFFF</color>
-    <color name="divider">#B6B6B6</color>
+    <color name="colorGvDivider">#e7e4e4</color>
+    <color name="colorDeepGreen">#3dc209</color>
+    <color name="colorGreen">#48e90a</color>
+    <color name="divider">#c1bebe</color>
 
     <color name="transparent">#9000</color>
 </resources>
