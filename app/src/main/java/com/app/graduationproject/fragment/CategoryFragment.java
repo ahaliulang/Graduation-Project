@@ -1,17 +1,20 @@
 package com.app.graduationproject.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.app.graduationproject.R;
+import com.app.graduationproject.activity.CategoryVideoListActivity;
 import com.app.graduationproject.adapter.GridviewAdapter;
-import com.app.graduationproject.utils.Constans;
+import com.app.graduationproject.utils.Constants;
 import com.app.graduationproject.view.ImageCycleView;
 
 import java.util.ArrayList;
@@ -49,8 +52,15 @@ public class CategoryFragment extends Fragment{
         });
 
         mGridView = (GridView) view.findViewById(R.id.gview);
-        GridviewAdapter adapter = new GridviewAdapter(getActivity(),R.layout.gridview_item,Constans.CATEGORY_NAME);
+        GridviewAdapter adapter = new GridviewAdapter(getActivity(),R.layout.gridview_item, Constants.CATEGORY_NAME);
         mGridView.setAdapter(adapter);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getActivity(), CategoryVideoListActivity.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 

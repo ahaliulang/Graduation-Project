@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.app.graduationproject.R;
-import com.app.graduationproject.utils.Constans;
+import com.app.graduationproject.utils.Constants;
 
 /**
  * Created by lenovo on 2016/10/22.
@@ -26,7 +26,7 @@ public class GridviewAdapter extends ArrayAdapter<String>{
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = LayoutInflater.from(getContext()).inflate(resourceId,null);
         TextView name = (TextView) view.findViewById(R.id.name);
-        name.setText(Constans.CATEGORY_NAME[position]);
+        name.setText(Constants.CATEGORY_NAME[position]);
         return view;
     }
 }

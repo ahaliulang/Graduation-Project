@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.app.graduationproject.R;
@@ -37,13 +38,19 @@ public class DetailSecondFragment extends Fragment{
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        setListViewHeightBaseOnChildren(listAll);
+        super.onActivityCreated(savedInstanceState);
+    }
+
     private void initView(View view) {
         back = (ImageView) view.findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 VideoDetailActivity activity = (VideoDetailActivity) getActivity();
-                activity.setChoice(1);
+                activity.onBackPressed();
             }
         });
         listAll = (ListView) view.findViewById(R.id.video_list_all);
@@ -55,4 +62,57 @@ public class DetailSecondFragment extends Fragment{
             clipList.add(clip);
         }
     }
+
+    /**
+     * 调整ListView的显示高度，scrollView嵌套ListView只显示一行
+     * @param listView
+     */
+    public void setListViewHeightBaseOnChildren(ListView listView){
+        //获取ListView对应的Adapter
+        ListAdapter adapter = listView.getAdapter();
+        if(adapter == null){
+            return;
+        }
+        int totalHeight = 0;
+        for(int i=0,len=adapter.getCount();i<len;i++){
+            //listAdapter.getCount()返回数据的条目
+            View listItem = adapter.getView(i,null,listView);
+            //计算子项的总高度
+            listItem.measure(0,0);
+            //统计所有子项的总高度
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight()*(adapter.getCount()-1));
+        //ListView.getDividerHeight()获取子项间分隔符占用的高度
+        //params.height最后得到整个ListView完整显示需要的高度
+        listView.setLayoutParams(params);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -13,8 +13,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.graduationproject.fragment.BaseFragment;
 import com.app.graduationproject.fragment.CategoryFragment;
 import com.app.graduationproject.fragment.HomeFragment;
+import com.app.graduationproject.fragment.MyFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private Toolbar mToolbar;
@@ -24,7 +26,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private long mExitTime = 0;
     private boolean mIsSearching;//搜索框是否出现，true为出现，false为隐藏
     private HomeFragment mHomeFragment;
+    private BaseFragment mBaseFragment;
     private CategoryFragment mCategoryFragment;
+    private MyFragment mMyFragment;
     private FragmentManager fragmentManager;//碎片管理器
     private FragmentTransaction transaction;
     @Override
@@ -103,11 +107,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (currentItem){
             case 1:
                 mHome.setTextColor(getResources().getColor(R.color.colorBlack));
-                if(mHomeFragment == null){
-                    mHomeFragment = new HomeFragment();
-                    transaction.add(R.id.main_ll_fragment,mHomeFragment);
+                if(mBaseFragment == null){
+                    mBaseFragment = new BaseFragment();
+
+                    transaction.add(R.id.main_ll_fragment,mBaseFragment);
                 }else {
-                    transaction.show(mHomeFragment);
+
+                    transaction.show(mBaseFragment);
                 }
                 break;
             case 2:
@@ -121,7 +127,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case 3:
                 mMy.setTextColor(getResources().getColor(R.color.colorBlack));
-                Toast.makeText(MainActivity.this,"你点击了3",Toast.LENGTH_SHORT).show();
+                if(mMyFragment == null){
+                    mMyFragment = new MyFragment();
+                    transaction.add(R.id.main_ll_fragment,mMyFragment);
+                }else {
+                    transaction.show(mMyFragment);
+                }
                 break;
             default:
                 break;
@@ -131,11 +142,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void hideFragments(FragmentTransaction transaction){
-        if(mHomeFragment != null){
-            transaction.hide(mHomeFragment);
+        if(mBaseFragment != null){
+            transaction.hide(mBaseFragment);
         }
         if(mCategoryFragment != null){
             transaction.hide(mCategoryFragment);
+        }
+        if(mMyFragment != null){
+            transaction.hide(mMyFragment);
         }
     }
 

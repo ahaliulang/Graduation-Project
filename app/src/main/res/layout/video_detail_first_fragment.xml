@@ -4,17 +4,161 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <TextView
-        android:id="@+id/video_detail_title"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/video_detail_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="内科学"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
+        <Button
+            android:layout_marginLeft="12dp"
+            android:id="@+id/follow"
+            android:layout_marginTop="6dp"
+            android:text="关注"
+            android:background="#e12929"
+            android:textColor="#ffffff"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp" />
+        <Button
+            android:layout_toRightOf="@+id/follow"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="6dp"
+            android:id="@+id/start"
+            android:text="开始学习"
+            android:background="#e12929"
+            android:textColor="#ffffff"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="内科学"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="5dp">
+        <TextView
+
+            android:text="评分"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:background="@drawable/score_text_style"
+            android:layout_width="45sp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/score"
+            android:text="☆☆☆☆☆"
+            android:layout_marginLeft="12dp"
+            android:textColor="#f74141"
+            android:textSize="17sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_marginTop="2dp"
+            android:src="@drawable/ic_person_black_18dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/study_number"
+            android:text="共24人学习"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_poll_black_18dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/visit_number"
+            android:text="共4210次访问"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+        <TextView
+            android:id="@+id/agency"
+            android:layout_alignParentLeft="true"
+            android:text="开课单位：广州医科大学"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/period"
+            android:layout_toRightOf="@+id/agency"
+            android:layout_marginLeft="20dp"
+            android:text="课程学时：94.0学时"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/category"
+            android:layout_below="@+id/agency"
+            android:layout_alignLeft="@+id/agency"
+            android:text="课程类别：医学"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/type"
+            android:layout_below="@+id/period"
+            android:layout_alignLeft="@+id/period"
+            android:text="课程类型：专业课"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/subject"
+            android:layout_below="@+id/category"
+            android:layout_alignLeft="@+id/category"
+            android:text="学科门类：医学"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/profession"
+            android:layout_below="@+id/type"
+            android:layout_alignLeft="@+id/type"
+            android:text="专业类：临床医学类"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/concrete_prof"
+            android:layout_below="@+id/subject"
+            android:layout_alignLeft="@+id/subject"
+            android:text="专业：临床医学"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/target"
+            android:layout_below="@+id/profession"
+            android:layout_alignLeft="@+id/profession"
+            android:text="适用专业：临床医学"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+
+
+
 
     <TextView
-        android:id="@+id/video_detail_time"
+        android:id="@+id/teacher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -62,14 +206,17 @@
                   内科学 教学包括理论课、临床见习和临床实习三部分
                   。"
         />
-    <ImageView
+    <Button
         android:id="@+id/click"
-        android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
-        android:tag="1"
-        android:clickable="true"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:text="more>>"
+        android:textAllCaps="false"
+        android:textColor="#d58bde"
+        android:background="@drawable/loadmore_button_style"
+        android:gravity="center"
+        android:layout_marginRight="8dp"
+        android:layout_gravity="end"
+        android:layout_width="60dp"
+        android:layout_height="40dp" />
     <TextView
         android:text="课程目录"
         android:layout_gravity="center"

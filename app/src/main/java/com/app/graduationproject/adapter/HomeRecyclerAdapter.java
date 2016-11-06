@@ -10,6 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.graduationproject.R;
+import com.app.graduationproject.db.Course;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by lenovo on 2016/10/20.
@@ -17,10 +23,18 @@ import com.app.graduationproject.R;
 public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapter.MyViewHolder>{
 
     private final Context mContext;
+    private final Realm mRealm;
+    private int lastCourseNum;
     private OnItemClickListener mOnItemClickListener; //提供回调接口click 和 longclick
+    private RealmResults<Course> mCourses;
+   // private RealmResults<CourseDetails> mCourseDetails;
 
-    public HomeRecyclerAdapter(Context mContext) {
+
+    public HomeRecyclerAdapter(Context mContext,Realm realm) {
         this.mContext = mContext;
+        this.mRealm = realm;
+
+        setHasStableIds(true);
     }
 
     @Override
@@ -30,8 +44,13 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        holder.imageView.setImageResource(R.drawable.test);
-        holder.title.setText("内科学");
+        final Course course = mCourses.get(position);
+       // final CourseDetails courseDetails = mCourseDetails.get(position);
+        Glide.with(mContext)
+                .load(course.getImgurl())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.imageView);
+        holder.title.setText(course.getName());
         holder.where.setText("广州医科大学");
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
