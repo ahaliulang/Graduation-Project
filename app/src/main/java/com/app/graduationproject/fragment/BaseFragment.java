@@ -24,6 +24,7 @@ import com.app.graduationproject.adapter.BaseAdapter;
 import com.app.graduationproject.db.Course;
 import com.app.graduationproject.services.CourseDetailsService;
 import com.app.graduationproject.services.CourseFetchService;
+import com.app.graduationproject.services.VideoFetchService;
 import com.app.graduationproject.utils.Constants;
 
 import io.realm.Realm;
@@ -74,7 +75,6 @@ public class BaseFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(getLayoutResId(),container,false);
-
         mRefreshLayout = $(view,getRefreshLayoutId());
         mRecyclerView = $(view,getRecyclerViewId());
         mRecyclerView.setItemAnimator(new DefaultItemAnimator()); //设置Item增加移除动画
@@ -104,7 +104,6 @@ public class BaseFragment extends Fragment{
         Intent intent = new Intent(getActivity(),CourseFetchService.class);
         intent.setAction(CourseFetchService.ACTION_FETCH_MORE);
         getActivity().startService(intent);
-
         mIsLoadingMore = true;
         setRefreshLayout(true);
     }
@@ -134,14 +133,18 @@ public class BaseFragment extends Fragment{
         Intent intent = new Intent(getActivity(),CourseFetchService.class);
         intent.setAction(CourseFetchService.ACTION_FETCH_REFRESH);
         getActivity().startService(intent);
+        Intent intentVideo = new Intent(getActivity(), VideoFetchService.class);
+        getActivity().startService(intentVideo);
         mIsRefreshing = true;
         setRefreshLayout(true);
     }
+
 
     private void fetchDetails(){
         Intent intent = new Intent(getActivity(), CourseDetailsService.class);
         getActivity().startService(intent);
     }
+
 
     @Override
     public void onDestroy() {
@@ -205,7 +208,7 @@ public class BaseFragment extends Fragment{
                 final Course course = adapter.getCourseAt(position);
                 Intent intent = new Intent(getActivity(), VideoDetailActivity.class); //转到视频详情活动
                 intent.putExtra(EXTRA_COURSE_CODE,course.getCode()); //携带课程号
-                startActivity(intent);
+                getActivity().startActivity(intent);
             }
         });
         return adapter;

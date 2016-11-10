@@ -2,6 +2,7 @@ package com.app.graduationproject.net;
 
 import com.app.graduationproject.db.Course;
 import com.app.graduationproject.db.CourseDetails;
+import com.app.graduationproject.db.Video;
 
 import java.util.List;
 
@@ -21,6 +22,8 @@ public interface CloudAPI {
     @GET("CourseDetailServlet")
     Call<List<CourseDetails>> courseDetailsResults();
 
+    @GET("VideoServlet")
+    Call<List<Video>> videoResult();
 
 
 }

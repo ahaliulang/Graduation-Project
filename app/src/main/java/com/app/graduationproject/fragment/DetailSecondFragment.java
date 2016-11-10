@@ -1,11 +1,15 @@
 package com.app.graduationproject.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -13,19 +17,38 @@ import android.widget.ListView;
 import com.app.graduationproject.R;
 import com.app.graduationproject.activity.VideoDetailActivity;
 import com.app.graduationproject.adapter.ListAllAdapter;
-import com.app.graduationproject.entity.Clip;
+import com.app.graduationproject.db.Video;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by lenovo on 2016/10/23.
  */
 public class DetailSecondFragment extends Fragment{
 
+    public static final String ACTION_SECOND_VIDEO = "com.app.graduationproject.fragment.second_fragment";
+    public static final String EXTRA_SECOND = "video_second";
+
+
+
     private ImageView back;
     private ListView listAll;
-    private List<Clip> clipList = new ArrayList<Clip>();
+    //private List<Clip> clipList = new ArrayList<Clip>();
+    private RealmResults<Video> videos;
+    private Realm mRealm;
+    private String courseCode;
+    private SharedPreferences mSharedPreferences; //存储上次播放位置
+    private int index; //选中的index，即上次播放的位置
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mRealm = Realm.getDefaultInstance();
+        courseCode = getActivity().getIntent().getStringExtra(BaseFragment.EXTRA_COURSE_CODE);
+        mSharedPreferences = getActivity().getSharedPreferences("videoindex", Context.MODE_PRIVATE);
+    }
 
     @Nullable
     @Override
@@ -33,8 +56,54 @@ public class DetailSecondFragment extends Fragment{
         View view = inflater.inflate(R.layout.video_detail_second_fragment,container,false);
         initView(view);
         initData();
-        ListAllAdapter allAdapter = new ListAllAdapter(getContext(),R.layout.video_list_all_item,clipList);
+        ListAllAdapter allAdapter = new ListAllAdapter(getContext(),R.layout.video_list_all_item,videos);
+        index = mSharedPreferences.getInt("index",0);
+
+
+
         listAll.setAdapter(allAdapter);
+        listAll.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.clear();
+                editor.putInt("index",position);
+                editor.commit();
+
+                for(int i=0;i<adapterView.getCount();i++){
+                    View v=adapterView.getChildAt(i);
+                    if (position == i) {
+                        v.setBackgroundColor(getResources().getColor(R.color.colorDeepGreen));
+                    } else {
+                        v.setBackgroundColor(Color.TRANSPARENT);
+                    }
+                }
+
+            }
+        });
+      /*  listAll.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.clear();
+                editor.putInt("index",position);
+                editor.commit();
+
+                for(int i=0;i<adapterView.getCount();i++){
+                    View v=adapterView.getChildAt(i);
+                    if (position == i) {
+                        v.setBackgroundColor(getResources().getColor(R.color.colorDeepGreen));
+                    } else {
+                        v.setBackgroundColor(Color.TRANSPARENT);
+                    }
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });*/
         return view;
     }
 
@@ -57,10 +126,7 @@ public class DetailSecondFragment extends Fragment{
     }
 
     private void initData(){
-        for(int i = 0 ;i<17;i++){
-            Clip clip = new Clip("第"+i+"集","内分泌","53:10");
-            clipList.add(clip);
-        }
+        videos = Video.fromCode(mRealm, courseCode);
     }
 
     /**

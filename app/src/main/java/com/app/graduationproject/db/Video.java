@@ -1,8 +1,8 @@
 package com.app.graduationproject.db;
 
-import com.google.gson.annotations.SerializedName;
-
+import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -13,18 +13,35 @@ public class Video extends RealmObject{
 
     //视频ID
     @PrimaryKey
-    @SerializedName("_id")
+
     private int id;
 
     //视频名称（每一集的）
     private String name;
     //视频的url
     private String url;
+
+    //视频的长度
+    private String time;
+
     //视频对应的课程编号
     private String code;
 
+    public static RealmResults<Video> fromCode(Realm realm, String courseCode){
+        return realm.where(Video.class).equalTo("code",courseCode).findAll();
+    }
 
+    public static RealmResults<Video> all(Realm realm){
+        return realm.where(Video.class).findAll();
+    }
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
     public int getId() {
         return id;
     }

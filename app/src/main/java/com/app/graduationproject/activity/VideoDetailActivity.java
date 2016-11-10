@@ -41,6 +41,8 @@ public class VideoDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(VideoDetailActivity.this,ShowVideoActivity.class);
+                intent.putExtra(ShowVideoActivity.EXTRA_VIDEO_URL,
+                        "http://123.207.246.137/video/test.mp4");
                 startActivity(intent);
             }
         });

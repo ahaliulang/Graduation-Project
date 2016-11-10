@@ -39,6 +39,7 @@
         <activity android:name=".activity.CategoryVideoListActivity"/>
         <service android:name=".services.CourseFetchService"/>
         <service android:name=".services.CourseDetailsService"/>
+        <service android:name=".services.VideoFetchService"/>
 
     </application>
 

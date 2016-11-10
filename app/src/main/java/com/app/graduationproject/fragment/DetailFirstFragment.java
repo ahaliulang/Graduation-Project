@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +19,16 @@ import com.app.graduationproject.activity.VideoDetailActivity;
 import com.app.graduationproject.adapter.VideoDetailAdapter;
 import com.app.graduationproject.db.Course;
 import com.app.graduationproject.db.CourseDetails;
+import com.app.graduationproject.db.Video;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by lenovo on 2016/10/23.
  */
 public class DetailFirstFragment extends Fragment{
+
 
     private Button more;   //查看更过按钮
     private RecyclerView mRecyclerView; //显示的部分课程列表
@@ -32,6 +36,7 @@ public class DetailFirstFragment extends Fragment{
     private TextView content;
     private Course course;
     private CourseDetails details;
+    private RealmResults<Video> videoList;
     private Realm mRealm;
     private TextView title;
     private TextView score;
@@ -41,14 +46,20 @@ public class DetailFirstFragment extends Fragment{
     private TextView teacher;
     private TextView agency,period,category,type,subject,profession,concrete_prof,target;
 
+
+
     private String course_code;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mRealm = Realm.getDefaultInstance();
+        course_code = getActivity().getIntent().getStringExtra(BaseFragment.EXTRA_COURSE_CODE);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        course_code = getActivity().getIntent().getStringExtra(BaseFragment.EXTRA_COURSE_CODE);
-        mRealm = Realm.getDefaultInstance();
         View view = inflater.inflate(R.layout.video_detail_first_fragment,container,false);
         initView(view);
         return view;
@@ -59,6 +70,12 @@ public class DetailFirstFragment extends Fragment{
         super.onActivityCreated(savedInstanceState);
         course = Course.fromCode(mRealm,course_code);
         details = CourseDetails.fromCode(mRealm,course_code);
+        //videoList = Video.fromCode(mRealm,course_code);
+        videoList = Video.all(mRealm);
+        for(int i=0;i<videoList.size();i++){
+            Video video = videoList.get(i);
+            Log.e("MYMY",video.getName());
+        }
         if(course != null){
             title.setText(course.getName());
             score.setText(course.getScore());
@@ -114,6 +131,7 @@ public class DetailFirstFragment extends Fragment{
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());//设置移除动画
 
+
         title = (TextView) view.findViewById(R.id.video_detail_title);
         score = (TextView) view.findViewById(R.id.score);
         study_number = (TextView) view.findViewById(R.id.study_number);
@@ -131,7 +149,7 @@ public class DetailFirstFragment extends Fragment{
     }
 
     private RecyclerView.Adapter initAdapter(){
-        final VideoDetailAdapter adapter = new VideoDetailAdapter(getContext());
+        final VideoDetailAdapter adapter = new VideoDetailAdapter(getContext(),mRealm);
         adapter.setOnItemClickListener(new VideoDetailAdapter.OnItemClickListener() {
             @Override
             public boolean onItemLongClick(View v, int position) {
@@ -140,7 +158,7 @@ public class DetailFirstFragment extends Fragment{
             }
             @Override
             public void onItemClick(View v, int position) {
-                Toast.makeText(getContext(),"你点击了item",Toast.LENGTH_SHORT).show();
+
             }
         });
         return adapter;
