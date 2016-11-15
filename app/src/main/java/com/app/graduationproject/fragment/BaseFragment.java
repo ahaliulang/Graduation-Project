@@ -259,7 +259,7 @@ public class BaseFragment extends Fragment{
 
             if(null == mAdapter || fetched == 0)
                 return;
-            ((BaseAdapter) mAdapter).updateInsertedData(fetched,trigger.equals(CourseFetchService.ACTION_FETCH_MORE));
+           // ((BaseAdapter) mAdapter).updateInsertedData(fetched,trigger.equals(CourseFetchService.ACTION_FETCH_MORE));
         }
     }
 

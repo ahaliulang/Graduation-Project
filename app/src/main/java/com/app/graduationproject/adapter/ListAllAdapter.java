@@ -35,7 +35,7 @@ public class ListAllAdapter extends ArrayAdapter<Video> {
         TextView number = (TextView) view.findViewById(R.id.number);
         TextView time = (TextView) view.findViewById(R.id.time);
         TextView title = (TextView) view.findViewById(R.id.title);
-        number.setText(video.getId()+"");
+        number.setText((++position)+"");
         time.setText(video.getTime());
         title.setText(video.getName());
         return view;

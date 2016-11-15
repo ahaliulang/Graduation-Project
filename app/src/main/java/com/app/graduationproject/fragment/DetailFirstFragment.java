@@ -1,5 +1,6 @@
 package com.app.graduationproject.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.graduationproject.R;
+import com.app.graduationproject.activity.ShowVideoActivity;
 import com.app.graduationproject.activity.VideoDetailActivity;
 import com.app.graduationproject.adapter.VideoDetailAdapter;
 import com.app.graduationproject.db.Course;
@@ -110,9 +112,9 @@ public class DetailFirstFragment extends Fragment{
                     //more.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
                     more.setText("收起");
                     content.setSingleLine(false);
-                  //  more.setTag(2);
+                    //  more.setTag(2);
                 } else {
-                   // more.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+                    // more.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
                     more.setText("more>>");
                     content.setSingleLine(true);
                     //more.setTag(1);
@@ -149,7 +151,7 @@ public class DetailFirstFragment extends Fragment{
     }
 
     private RecyclerView.Adapter initAdapter(){
-        final VideoDetailAdapter adapter = new VideoDetailAdapter(getContext(),mRealm);
+        final VideoDetailAdapter adapter = new VideoDetailAdapter(getContext(),mRealm,course_code);
         adapter.setOnItemClickListener(new VideoDetailAdapter.OnItemClickListener() {
             @Override
             public boolean onItemLongClick(View v, int position) {
@@ -158,7 +160,10 @@ public class DetailFirstFragment extends Fragment{
             }
             @Override
             public void onItemClick(View v, int position) {
-
+                Video video = videoList.get(position);
+                Intent intent = new Intent(getActivity(), ShowVideoActivity.class);
+                intent.putExtra(ShowVideoActivity.EXTRA_VIDEO_URL,video.getUrl());
+                startActivity(intent);
             }
         });
         return adapter;

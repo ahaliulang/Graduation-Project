@@ -1,6 +1,7 @@
 package com.app.graduationproject.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.app.graduationproject.R;
+import com.app.graduationproject.activity.ShowVideoActivity;
 import com.app.graduationproject.activity.VideoDetailActivity;
 import com.app.graduationproject.adapter.ListAllAdapter;
 import com.app.graduationproject.db.Video;
@@ -70,6 +72,11 @@ public class DetailSecondFragment extends Fragment{
                 editor.clear();
                 editor.putInt("index",position);
                 editor.commit();
+
+                Video video = videos.get(position);
+                Intent intent = new Intent(getActivity(), ShowVideoActivity.class);
+                intent.putExtra(ShowVideoActivity.EXTRA_VIDEO_URL,video.getUrl());
+                startActivity(intent);
 
                 for(int i=0;i<adapterView.getCount();i++){
                     View v=adapterView.getChildAt(i);

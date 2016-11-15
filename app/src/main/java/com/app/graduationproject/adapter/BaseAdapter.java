@@ -36,12 +36,14 @@ public  class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder>{
         this.mRealm = realm;
         initCourses(mRealm);
         lastCoursesNum = mCourses.size();
+        Log.e("JJ",lastCoursesNum+"");
         setHasStableIds(true);
+
     }
 
     public void updateInsertedData(int numImages,boolean isMore){
         if(isMore){
-            notifyItemRangeInserted(lastCoursesNum,numImages);
+            notifyItemRangeInserted(0,numImages);
         }else {
             notifyItemRangeInserted(0,numImages);
         }
@@ -56,8 +58,13 @@ public  class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
+        for(int i=0;i<lastCoursesNum;i++){
+            Course course = mCourses.get(i);
+            Log.e("FF",course.getCode());
+        }
         final Course course = mCourses.get(position);
-        Log.e("TAN",course.getImgurl());
+
+        Log.e("TAN",course.getCode()+"---"+course.getImgurl());
         Glide.with(mContext)
                 .load(Uri.parse(course.getImgurl()))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -80,6 +87,11 @@ public  class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder>{
                 return false;
             }
         });
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return mCourses.get(position).getCode().hashCode();
     }
 
     @Override

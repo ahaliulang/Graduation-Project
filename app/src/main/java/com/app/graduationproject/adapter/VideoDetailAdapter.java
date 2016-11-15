@@ -31,16 +31,17 @@ public class VideoDetailAdapter extends RecyclerView.Adapter<VideoDetailAdapter.
     private RealmResults<Video> mVideo;
     private int selectIndex=0;
     private SharedPreferences sp;
+    private int id;
 
     boolean flag = true; //首次选中
 
-    public VideoDetailAdapter(Context context, Realm realm) {
+    public VideoDetailAdapter(Context context, Realm realm,String courseCode) {
 
         this.mContext = context;
         this.mRealm = realm;
         setHasStableIds(true);
         isClicks = new ArrayList<>();
-        mVideo = Video.all(realm);
+        mVideo = Video.fromCode(mRealm,courseCode);
         for (int i = 0; i < mVideo.size(); i++) {
             isClicks.add(false);
         }
@@ -79,9 +80,9 @@ public class VideoDetailAdapter extends RecyclerView.Adapter<VideoDetailAdapter.
             isClicks.set(selectIndex,true);
             flag = false;
         }
-
+        id=position;
         final Video video = mVideo.get(index);
-        holder.number.setText("" + video.getId());
+        holder.number.setText((++id)+"");
         holder.time.setText(video.getTime());
         holder.title.setText(video.getName());
         if (isClicks.get(index) ) {
