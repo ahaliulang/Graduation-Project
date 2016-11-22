@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.app.graduationproject.R;
 import com.app.graduationproject.activity.CategoryVideoListActivity;
@@ -24,6 +26,9 @@ import java.util.List;
  * Created by lenovo on 2016/10/22.
  */
 public class CategoryFragment extends Fragment{
+
+
+    public static final String EXTRA_CATEGORY = "extra_category";
 
     private ImageCycleView mImageCycleView;
     private List<ImageCycleView.ImageInfo> list;
@@ -57,7 +62,12 @@ public class CategoryFragment extends Fragment{
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                TextView text = (TextView) view.findViewById(R.id.name);
+                String category = text.getText().toString();
+                Log.e("cate",category);
                 Intent intent = new Intent(getActivity(), CategoryVideoListActivity.class);
+                intent.putExtra(EXTRA_CATEGORY,category);
+
                 startActivity(intent);
             }
         });

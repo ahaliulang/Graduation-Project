@@ -37,9 +37,11 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activity.VideoDetailActivity" />
         <activity android:name=".activity.CategoryVideoListActivity"/>
+        <activity android:name=".activity.LoginActivity"/>
         <service android:name=".services.CourseFetchService"/>
         <service android:name=".services.CourseDetailsService"/>
         <service android:name=".services.VideoFetchService"/>
+        <service android:name=".services.LoginService"/>
 
     </application>
 

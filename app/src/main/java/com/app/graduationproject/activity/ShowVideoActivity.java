@@ -93,7 +93,7 @@ public class ShowVideoActivity extends AppCompatActivity implements MediaPlayer.
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
         switch (what) {
             case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-              /*if (mVideoView.isPlaying()) {
+              if (mVideoView.isPlaying()) {
                     mVideoView.pause();
                     pb.setVisibility(View.VISIBLE);
                     downloadRateView.setText("");
@@ -101,24 +101,24 @@ public class ShowVideoActivity extends AppCompatActivity implements MediaPlayer.
                     downloadRateView.setVisibility(View.VISIBLE);
                     loadRateView.setVisibility(View.VISIBLE);
 
-                }*/
+                }
 
-                background.setVisibility(View.GONE);
+               /* background.setVisibility(View.GONE);
                 mVideoView.start();
                 pb.setVisibility(View.GONE);
                 downloadRateView.setVisibility(View.GONE);
                 loadRateView.setVisibility(View.GONE);
                 mMediaController.hide();
-                mCustomMediaController.hide();
+                mCustomMediaController.hide();*/
                 break;
             case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-//                mVideoView.start();
-//                background.setVisibility(View.GONE);
-//                pb.setVisibility(View.GONE);
-//                downloadRateView.setVisibility(View.GONE);
-//                loadRateView.setVisibility(View.GONE);
-//                mMediaController.hide();
-//                mCustomMediaController.hide();
+                mVideoView.start();
+                background.setVisibility(View.GONE);
+                pb.setVisibility(View.GONE);
+                downloadRateView.setVisibility(View.GONE);
+                loadRateView.setVisibility(View.GONE);
+                mMediaController.hide();
+                mCustomMediaController.hide();
                 break;
             case MediaPlayer.MEDIA_INFO_DOWNLOAD_RATE_CHANGED:
                 downloadRateView.setText("" + extra + "kb/s" + "  ");

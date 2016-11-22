@@ -35,6 +35,8 @@ public class DetailFirstFragment extends Fragment{
     private Button more;   //查看更过按钮
     private RecyclerView mRecyclerView; //显示的部分课程列表
     private Button loadingList;
+    private Button follow;
+    private Button start;
     private TextView content;
     private Course course;
     private CourseDetails details;
@@ -81,22 +83,43 @@ public class DetailFirstFragment extends Fragment{
         if(course != null){
             title.setText(course.getName());
             score.setText(course.getScore());
+            //从Java7开始，switch开始支持String
+            switch (course.getScore()){
+                case "5":
+                    score.setText("☆☆☆☆☆");
+                    break;
+                case "4":
+                    score.setText("☆☆☆☆");
+                    break;
+                case "3":
+                    score.setText("☆☆☆");
+                    break;
+                case "2":
+                    score.setText("☆☆");
+                    break;
+                case "1":
+                    score.setText("☆");
+                    break;
+                default:
+                    score.setText("☆");
+                    break;
+            }
             study_number.setText(course.getStudy());
             visit_number.setText(course.getVisit());
-            teacher.setText(course.getTeacher());
+            teacher.setText("讲师："+course.getTeacher());
             video_detail_desc.setText(course.getIntroduce());
             mRecyclerView.setAdapter(initAdapter());
         }
         if(details != null){
             //agency,period,category,type,subject,profession,concrete_prof,target
-            agency.setText(details.getAgency());
-            period.setText(details.getPeriod());
-            category.setText(details.getCategory());
-            type.setText(details.getType());
-            subject.setText(details.getSubject());
-            profession.setText(details.getProfession());
-            concrete_prof.setText(details.getConctrte_prof());
-            target.setText(details.getTarget());
+            agency.setText("开课单位："+details.getAgency());
+            period.setText("课程学时："+details.getPeriod());
+            category.setText("课程类别："+details.getCategory());
+            type.setText("课程类型："+details.getType());
+            subject.setText("学科门类："+details.getSubject());
+            profession.setText("专业类："+details.getProfession());
+            concrete_prof.setText("专业："+details.getConctrte_prof());
+            target.setText("适用专业："+details.getTarget());
         }
 
 
@@ -129,6 +152,21 @@ public class DetailFirstFragment extends Fragment{
                 activity.setChoice(2);
             }
         });
+        follow = (Button) view.findViewById(R.id.follow); //关注按钮
+        follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        start = (Button) view.findViewById(R.id.start); //开始学习
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.list_recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());//设置移除动画

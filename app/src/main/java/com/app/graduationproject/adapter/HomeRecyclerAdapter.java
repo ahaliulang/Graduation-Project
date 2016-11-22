@@ -19,6 +19,7 @@ import io.realm.RealmResults;
 
 /**
  * Created by lenovo on 2016/10/20.
+ * 被BaseAdapter替代
  */
 public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapter.MyViewHolder>{
 

@@ -45,7 +45,7 @@ public class VideoDetailAdapter extends RecyclerView.Adapter<VideoDetailAdapter.
         for (int i = 0; i < mVideo.size(); i++) {
             isClicks.add(false);
         }
-        sp = context.getSharedPreferences("videoindex", Context.MODE_PRIVATE);
+        sp = context.getSharedPreferences(courseCode, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -59,7 +59,9 @@ public class VideoDetailAdapter extends RecyclerView.Adapter<VideoDetailAdapter.
 
         selectIndex = sp.getInt("index",0);
         final int index ;
-        if(selectIndex == 0){
+        if(mVideo.size() <= 4){
+            index = position;
+        }else if(selectIndex == 0){
             index = position;
         }else if(selectIndex == mVideo.size()-1){
             index = selectIndex - 3+position;
@@ -82,7 +84,13 @@ public class VideoDetailAdapter extends RecyclerView.Adapter<VideoDetailAdapter.
         }
         id=position;
         final Video video = mVideo.get(index);
-        holder.number.setText((++id)+"");
+
+        if(mVideo.size() <= 4){
+            holder.number.setText((++id)+"");
+        }else {
+            selectIndex = selectIndex == 0?1:selectIndex;
+            holder.number.setText((selectIndex+position) + "");
+        }
         holder.time.setText(video.getTime());
         holder.title.setText(video.getName());
         if (isClicks.get(index) ) {
@@ -130,6 +138,9 @@ public class VideoDetailAdapter extends RecyclerView.Adapter<VideoDetailAdapter.
 
     @Override
     public int getItemCount() {
+        if(mVideo.size() < 4){
+            return mVideo.size();
+        }
         return 4;
     }
 

@@ -49,7 +49,7 @@ public class DetailSecondFragment extends Fragment{
         super.onCreate(savedInstanceState);
         mRealm = Realm.getDefaultInstance();
         courseCode = getActivity().getIntent().getStringExtra(BaseFragment.EXTRA_COURSE_CODE);
-        mSharedPreferences = getActivity().getSharedPreferences("videoindex", Context.MODE_PRIVATE);
+        mSharedPreferences = getActivity().getSharedPreferences(courseCode, Context.MODE_PRIVATE);
     }
 
     @Nullable

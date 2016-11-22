@@ -65,6 +65,10 @@ public class CourseDetails extends RealmObject{
         return realm.where(CourseDetails.class).findAll();
     }
 
+    public static RealmResults<CourseDetails> fromCate(Realm realm,String category){
+        return realm.where(CourseDetails.class).equalTo("category",category).findAll();
+    }
+
 
     //清除数据库中的数据
     public static void clearCourseDetail(final Context context, Realm realm){
