@@ -115,4 +115,12 @@ public class LoginActivity extends AppCompatActivity {
             login.setBackgroundColor(getResources().getColor(R.color.colorGray));
         }
     }
+
+     /*class GsonUtil{
+        public <T> T parseJsonWithGson(String jsonData, Class<T> type){
+            Gson gson = new Gson();
+            T result = gson.fromJson(jsonData,type);
+            return result;
+        }
+    }*/
 }
