@@ -109,11 +109,13 @@
 
 
     <LinearLayout
+        android:id="@+id/login_item"
         android:background="@color/colorGvDivider"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/info"
@@ -139,7 +141,7 @@
             android:layout_height="0.5dp"
             android:background="@color/colorGray"/>
         <LinearLayout
-            android:id="@+id/updatePwd"
+            android:id="@+id/changePwd"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:layout_width="match_parent"
@@ -167,5 +169,6 @@
         android:layout_height="wrap_content"
         android:text="退出登录"
         android:textSize="18sp"
-        android:textColor="@color/colorBlackGreen"/>
+        android:textColor="@color/colorBlackGreen"
+        android:visibility="gone"/>
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.app.graduationproject.net;
 import com.app.graduationproject.db.Course;
 import com.app.graduationproject.db.CourseDetails;
 import com.app.graduationproject.db.Video;
+import com.app.graduationproject.entity.ChangePwdStatus;
 import com.app.graduationproject.entity.LoginStatus;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import retrofit2.http.POST;
  */
 public interface CloudAPI {
     //API的url
-    String BASE_URL = "http://123.207.246.137//CloudClass_Server/servlet/";
+    String BASE_URL = "http://10.168.122.181:8080/CloudClass_Server/servlet/";
 
     @GET("CourseServlet")
     Call<List<Course>> Results();
@@ -32,6 +33,11 @@ public interface CloudAPI {
     @FormUrlEncoded
     @POST("LoginServlet")
     Call<LoginStatus> login(@Field("studentCode") String studentCode, @Field("password") String courseCode);
+
+    @FormUrlEncoded
+    @POST("UpdatePasswordServlet")
+    Call<ChangePwdStatus> changePwd(@Field("account") String studentCode, @Field("newPassword") String newPassword,@Field("oldPassword")String oldPassword);
+
 
 }
 

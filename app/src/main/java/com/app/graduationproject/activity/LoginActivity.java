@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,18 +28,21 @@ public class LoginActivity extends AppCompatActivity {
     public static final String EXTRA_PASSWROD = "password";
 
     private Button login;
-    private String code;
-    private String pwd;
+    private String code; //账号
+    private String pwd; //密码
     private EditText user;
     private EditText password;
     private LocalBroadcastManager mLocalBroadcastManager;
     private LoginStatusReceiver loginStatusReceiver;
+
+    private SharedPreferences mSharedPreferences; //存储登录的账号
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mSharedPreferences = this.getSharedPreferences("account",MODE_PRIVATE);
         loginStatusReceiver = new LoginStatusReceiver();
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
         mLocalBroadcastManager.registerReceiver(loginStatusReceiver, new IntentFilter(LoginService.ACTION_STATUS));
@@ -70,12 +74,21 @@ public class LoginActivity extends AppCompatActivity {
             final int status = intent.getIntExtra(LoginService.EXTRA_STATUS, 0);
             if (status == 1) {
                 Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
+
+                //将登录账号存储起来
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.clear();
+                editor.putString("accountId",code);
+                editor.commit();
+                LoginActivity.this.setResult(RESULT_OK);
                 finish();
             } else {
                 Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+
 
 
     private TextWatcher userwatch = new TextWatcher() {
