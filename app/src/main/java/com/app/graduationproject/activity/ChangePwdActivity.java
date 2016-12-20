@@ -76,6 +76,8 @@ public class ChangePwdActivity extends Activity{
                     intent.putExtra(EXTRA_USER,account);
                     intent.putExtra(EXTRA_OLD_PASSWORD,old_pwd_text);
                     intent.putExtra(EXTRA_NEW_PASSWORD,new_pwd_text);
+                    Log.e("TAG",account+" " + old_pwd_text + " " + new_pwd_text);
+
                     startService(intent);
                 }
             }

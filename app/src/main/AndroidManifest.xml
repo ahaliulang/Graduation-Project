@@ -39,11 +39,16 @@
         <activity android:name=".activity.CategoryVideoListActivity"/>
         <activity android:name=".activity.LoginActivity"/>
         <activity android:name=".activity.ChangePwdActivity"/>
+        <activity android:name=".activity.UpdateProfileActivity"/>
+
+
         <service android:name=".services.CourseFetchService"/>
         <service android:name=".services.CourseDetailsService"/>
         <service android:name=".services.VideoFetchService"/>
         <service android:name=".services.LoginService"/>
         <service android:name=".services.ChangePwdService"/>
+        <service android:name=".services.UpdateProfileService"/>
+        <service android:name=".services.GetProfileService"/>
 
     </application>
 

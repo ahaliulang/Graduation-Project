@@ -5,6 +5,8 @@ import com.app.graduationproject.db.CourseDetails;
 import com.app.graduationproject.db.Video;
 import com.app.graduationproject.entity.ChangePwdStatus;
 import com.app.graduationproject.entity.LoginStatus;
+import com.app.graduationproject.entity.Student;
+import com.app.graduationproject.entity.UpdateProfileStatus;
 
 import java.util.List;
 
@@ -18,8 +20,8 @@ import retrofit2.http.POST;
  * Created by lenovo on 2016/10/31.
  */
 public interface CloudAPI {
-    //API的url
-    String BASE_URL = "http://10.168.122.181:8080/CloudClass_Server/servlet/";
+    //API的url 123.207.246.137 -- 192.168.0.35:8080
+    String BASE_URL = "http://123.207.246.137/CloudClass_Server/servlet/";
 
     @GET("CourseServlet")
     Call<List<Course>> Results();
@@ -38,6 +40,15 @@ public interface CloudAPI {
     @POST("UpdatePasswordServlet")
     Call<ChangePwdStatus> changePwd(@Field("account") String studentCode, @Field("newPassword") String newPassword,@Field("oldPassword")String oldPassword);
 
+    @FormUrlEncoded
+    @POST("UpdateProfileServlet")
+    Call<UpdateProfileStatus> updateProfile(@Field("account") String studentCode, @Field("name") String name, @Field("gender")String gender,
+                                            @Field("phone") String phone,@Field("mail") String mail,@Field("institute") String institute,
+                                            @Field("profession") String profession,@Field("introduce") String introduce);
+
+    @FormUrlEncoded
+    @POST("GetProfileServlet")
+    Call<Student> getProfile(@Field("account")String code);
 
 }
 

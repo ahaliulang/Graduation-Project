@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GraduationProject.iml" filepath="$PROJECT_DIR$/GraduationProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Graduation-Project.iml" filepath="$PROJECT_DIR$/Graduation-Project.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/vitamio2/vitamio2.iml" filepath="$PROJECT_DIR$/vitamio2/vitamio2.iml" />
     </modules>

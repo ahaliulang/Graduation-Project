@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import com.app.graduationproject.R;
 import com.app.graduationproject.activity.ChangePwdActivity;
 import com.app.graduationproject.activity.LoginActivity;
+import com.app.graduationproject.activity.UpdateProfileActivity;
 
 /**
  * Created by lenovo on 2016/10/26.
@@ -76,6 +77,13 @@ public class MyFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), ChangePwdActivity.class);
+                startActivity(intent);
+            }
+        });
+        info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), UpdateProfileActivity.class);
                 startActivity(intent);
             }
         });
