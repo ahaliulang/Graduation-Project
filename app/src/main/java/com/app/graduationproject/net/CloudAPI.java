@@ -4,7 +4,6 @@ import com.app.graduationproject.db.Course;
 import com.app.graduationproject.db.CourseDetails;
 import com.app.graduationproject.db.Video;
 import com.app.graduationproject.entity.ChangePwdStatus;
-import com.app.graduationproject.entity.LoginStatus;
 import com.app.graduationproject.entity.Student;
 import com.app.graduationproject.entity.UpdateProfileStatus;
 
@@ -34,7 +33,7 @@ public interface CloudAPI {
 
     @FormUrlEncoded
     @POST("LoginServlet")
-    Call<LoginStatus> login(@Field("studentCode") String studentCode, @Field("password") String courseCode);
+    Call<String> login(@Field("studentCode") String studentCode, @Field("password") String courseCode);
 
     @FormUrlEncoded
     @POST("UpdatePasswordServlet")

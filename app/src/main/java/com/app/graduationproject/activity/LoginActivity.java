@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.app.graduationproject.R;
 import com.app.graduationproject.services.LoginService;
 
+import io.vov.vitamio.utils.Log;
+
 /**
  * Created by TAN on 2016/11/20.
  */
@@ -71,16 +73,21 @@ public class LoginActivity extends AppCompatActivity {
     private class LoginStatusReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final int status = intent.getIntExtra(LoginService.EXTRA_STATUS, 0);
-            if (status == 1) {
+            final String name = intent.getStringExtra(LoginService.EXTRA_STATUS);
+            Log.e("name");
+            if (!TextUtils.isEmpty(name)) {
                 Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
 
                 //将登录账号存储起来
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
                 editor.clear();
-                editor.putString("accountId",code);
+                editor.putString("accountId",code); //保存账号
+                editor.putString("name",name); //保存昵称
                 editor.commit();
-                LoginActivity.this.setResult(RESULT_OK);
+                //LoginActivity.this.setResult(RESULT_OK);
+                Intent intentName = new Intent();
+                intentName.putExtra("name",name);
+                LoginActivity.this.setResult(RESULT_OK,intentName);
                 finish();
             } else {
                 Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show();

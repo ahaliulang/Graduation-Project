@@ -137,6 +137,7 @@ public class UpdateProfileActivity extends Activity {
 
     private void initListener() {
         btn_update.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 if(validateText()){ //格式输入正确
@@ -149,6 +150,7 @@ public class UpdateProfileActivity extends Activity {
                     intent.putExtra(EXTRA_INSTITUTE,institute);
                     intent.putExtra(EXTRA_PROFESSION,profession);
                     intent.putExtra(EXTRA_INTRODUCE,introduce);
+                    //name = et_name.getText().toString().trim();
                     startService(intent);
                 }
             }
@@ -180,6 +182,9 @@ public class UpdateProfileActivity extends Activity {
         introduce = et_introduce.getText().toString().trim();
         if(TextUtils.isEmpty(name)){
             et_name.setError("请填写姓名！");
+            return false;
+        }else if(name.length()>10){
+            et_name.setError("名字长度不能超过10位！");
             return false;
         }
 
@@ -247,6 +252,13 @@ public class UpdateProfileActivity extends Activity {
                 final int status = intent.getIntExtra(UpdateProfileService.EXTRA_STATUS,0);
                 if(status == 1){
                     Toast.makeText(context,"修改成功！",Toast.LENGTH_SHORT).show();
+                    SharedPreferences  .Editor editor = mSharedPreferences.edit();
+                    editor.putString("name",name); //保存昵称
+                    editor.commit();
+
+                    Intent intentName = new Intent();
+                    intentName.putExtra("name",name);
+                    UpdateProfileActivity.this.setResult(RESULT_OK,intentName);
                     finish();
                 }else {
                     Toast.makeText(context,"修改失败！",Toast.LENGTH_SHORT).show();

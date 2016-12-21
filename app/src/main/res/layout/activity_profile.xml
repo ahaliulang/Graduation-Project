@@ -27,7 +27,7 @@
 
         <EditText
             android:id="@+id/et_name"
-            android:maxLines="1"
+            android:singleLine="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -102,7 +102,7 @@
             android:inputType="phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"/>
+            android:singleLine="true"/>
     </LinearLayout>
 
 
@@ -128,7 +128,7 @@
             android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"/>
+            android:singleLine="true"/>
     </LinearLayout>
 
 
@@ -147,7 +147,7 @@
             android:id="@+id/et_institute"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"/>
+            android:singleLine="true"/>
     </LinearLayout>
 
     <LinearLayout
@@ -165,7 +165,7 @@
             android:id="@+id/et_profession"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"/>
+            android:singleLine="true"/>
     </LinearLayout>
 
     <LinearLayout

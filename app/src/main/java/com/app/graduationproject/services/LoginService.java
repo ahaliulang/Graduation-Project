@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.app.graduationproject.activity.LoginActivity;
-import com.app.graduationproject.entity.LoginStatus;
 import com.app.graduationproject.net.CloudAPIService;
 import com.app.graduationproject.utils.Constants;
 
@@ -47,10 +46,10 @@ public class LoginService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         code = intent.getStringExtra(LoginActivity.EXTRA_USER);
         password = intent.getStringExtra(LoginActivity.EXTRA_PASSWROD);
-        int status=0;
+        String name="";
         try {
-            Response<LoginStatus> execute = CloudAPIService.getInstance().login(code, password).execute();
-            status = execute.body().getStatus();
+            Response<String> execute = CloudAPIService.getInstance().login(code, password).execute();
+            name = execute.body();
         } catch (SocketTimeoutException e) {
             mExceptionCode = Constants.NETWORK_EXCEPTION.TIMEOUT;
         } catch (UnknownHostException e) {
@@ -60,12 +59,12 @@ public class LoginService extends IntentService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sendStatus(status);
+        sendStatus(name);
     }
 
-    private void sendStatus(int status){
+    private void sendStatus(String name){
         Intent broadcast = new Intent(ACTION_STATUS);
-        broadcast.putExtra(EXTRA_STATUS,status);
+        broadcast.putExtra(EXTRA_STATUS,name);
         localBroadcastManager.sendBroadcast(broadcast);
     }
 }
