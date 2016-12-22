@@ -1,11 +1,16 @@
 package com.app.graduationproject;
 
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,8 +22,16 @@ import com.app.graduationproject.fragment.BaseFragment;
 import com.app.graduationproject.fragment.CategoryFragment;
 import com.app.graduationproject.fragment.HomeFragment;
 import com.app.graduationproject.fragment.MyFragment;
+import com.app.graduationproject.utils.Permissions;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Toolbar mToolbar;
     private TextView mHome;
     private TextView mCategory;
@@ -31,18 +44,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MyFragment mMyFragment;
     private FragmentManager fragmentManager;//碎片管理器
     private FragmentTransaction transaction;
+
+    public static final int PHOTO_REQUEST_CAMERA = 1;//拍照
+    public static final int PHOTO_REQUEST_GALLERY = 2; //从相册中选择
+    private static final int PHOTO_REQUEST_CUT = 3;//结果
+
+    private static final String PHOTO_FILE_NAME = "avatar.jpg";
+    private File carmeraFile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
+        Permissions.verifyStoragePermissions(this);
         initView();
     }
 
     private void initView() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-       // mToolbar.setNavigationIcon(R.drawable.gzhmu);
+        // mToolbar.setNavigationIcon(R.drawable.gzhmu);
         mHome = (TextView) findViewById(R.id.home);
         mHome.setOnClickListener(this);
         mCategory = (TextView) findViewById(R.id.category);
@@ -75,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main,menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -84,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_about:
                 //TODO
                 break;
@@ -100,37 +122,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    private void setChoice(int currentItem){
+    private void setChoice(int currentItem) {
         transaction = fragmentManager.beginTransaction();
         hideFragments(transaction);
         clearChoice();
-        switch (currentItem){
+        switch (currentItem) {
             case 1:
                 mHome.setTextColor(getResources().getColor(R.color.colorBlack));
-                if(mBaseFragment == null){
+                if (mBaseFragment == null) {
                     mBaseFragment = new BaseFragment();
 
-                    transaction.add(R.id.main_ll_fragment,mBaseFragment);
-                }else {
+                    transaction.add(R.id.main_ll_fragment, mBaseFragment);
+                } else {
 
                     transaction.show(mBaseFragment);
                 }
                 break;
             case 2:
                 mCategory.setTextColor(getResources().getColor(R.color.colorBlack));
-                if(mCategoryFragment == null){
+                if (mCategoryFragment == null) {
                     mCategoryFragment = new CategoryFragment();
-                    transaction.add(R.id.main_ll_fragment,mCategoryFragment);
-                }else {
+                    transaction.add(R.id.main_ll_fragment, mCategoryFragment);
+                } else {
                     transaction.show(mCategoryFragment);
                 }
                 break;
             case 3:
                 mMy.setTextColor(getResources().getColor(R.color.colorBlack));
-                if(mMyFragment == null){
+                if (mMyFragment == null) {
                     mMyFragment = new MyFragment();
-                    transaction.add(R.id.main_ll_fragment,mMyFragment);
-                }else {
+                    transaction.add(R.id.main_ll_fragment, mMyFragment);
+                } else {
                     transaction.show(mMyFragment);
                 }
                 break;
@@ -141,14 +163,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void hideFragments(FragmentTransaction transaction){
-        if(mBaseFragment != null){
+    private void hideFragments(FragmentTransaction transaction) {
+        if (mBaseFragment != null) {
             transaction.hide(mBaseFragment);
         }
-        if(mCategoryFragment != null){
+        if (mCategoryFragment != null) {
             transaction.hide(mCategoryFragment);
         }
-        if(mMyFragment != null){
+        if (mMyFragment != null) {
             transaction.hide(mMyFragment);
         }
     }
@@ -156,11 +178,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //按两次返回键退出程序
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-            if((System.currentTimeMillis() - mExitTime) > 2000){
-                Toast.makeText(MainActivity.this,"再按一次退出程序",Toast.LENGTH_SHORT).show();
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
                 mExitTime = System.currentTimeMillis();
-            }else {
+            } else {
                 finish(); //在两秒之内按两次返回键退出程序
             }
         }
@@ -175,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //点击底部菜单栏
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.home:
                 setChoice(1);
                 break;
@@ -193,9 +215,85 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 重置所有选项
      */
-    private void clearChoice(){
+    private void clearChoice() {
         mHome.setTextColor(getResources().getColor(R.color.colorGray));
         mCategory.setTextColor(getResources().getColor(R.color.colorGray));
         mMy.setTextColor(getResources().getColor(R.color.colorGray));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (mMyFragment.isVisible()) {
+            if (requestCode == PHOTO_REQUEST_GALLERY) {
+                if (data != null) {
+                    //得到图片的全路径
+                    Uri uri = data.getData();
+                    crop(uri);
+                    //avatar.setImageURI(uri);
+                    Glide.with(this).load(uri)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(mMyFragment.avatar);
+                }
+            } else if (requestCode == PHOTO_REQUEST_CAMERA) {
+                //从相机返回的数据
+                carmeraFile = new File(Environment.getExternalStorageDirectory()+"/dongdong", "temp.jpg");
+                if(carmeraFile.exists()){
+                    crop(Uri.fromFile(carmeraFile));
+                }
+
+            } else if (requestCode == PHOTO_REQUEST_CUT) {
+                if (data != null) {
+                    Log.e("dongdong","9");
+                    Bitmap bitmap = data.getParcelableExtra("data");
+                    mMyFragment.avatar.setImageBitmap(bitmap);
+                    try {
+                        File file = new File(getFilesDir(), PHOTO_FILE_NAME);
+                        if (!file.exists()) file.createNewFile();
+                        //通过得到文件的父文件，判断父文件是否存在
+                        File parentFile = file.getParentFile();
+                        if (!parentFile.exists()) {
+                            parentFile.mkdirs();
+                        }
+                        //把图片保存至本地
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(file));
+                    } catch (FileNotFoundException e) {
+                        Log.e("TAG", "nonononono");
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                try {
+                    carmeraFile.delete();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+    }
+
+    /**
+     * 剪切图片
+     */
+    private void crop(Uri uri) {
+        //裁剪图片意图
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("corp", "true");
+        //裁剪框比例，1：1
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        //裁剪后输出图片的尺寸大小
+        intent.putExtra("outputX", 250);
+        intent.putExtra("outputY", 250);
+
+        intent.putExtra("outputFormat", "JPEG");//图片格式
+        intent.putExtra("noFaceDetection", true);//取消人脸识别
+        intent.putExtra("return-data", true);
+        //开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_CUT
+        startActivityForResult(intent, PHOTO_REQUEST_CUT);
     }
 }
