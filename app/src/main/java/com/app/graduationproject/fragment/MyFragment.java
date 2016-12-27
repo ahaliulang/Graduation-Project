@@ -20,7 +20,9 @@ import android.widget.TextView;
 
 import com.app.graduationproject.R;
 import com.app.graduationproject.activity.ChangePwdActivity;
+import com.app.graduationproject.activity.FocusActivity;
 import com.app.graduationproject.activity.LoginActivity;
+import com.app.graduationproject.activity.LearnActivity;
 import com.app.graduationproject.activity.UpdateProfileActivity;
 import com.app.graduationproject.view.BottomDialog;
 
@@ -143,6 +145,20 @@ public class MyFragment extends Fragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), UpdateProfileActivity.class);
                 startActivityForResult(intent,NAME_REQUESR_PROFILE);
+            }
+        });
+        study.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), LearnActivity.class);
+                startActivity(intent);
+            }
+        });
+        fellow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), FocusActivity.class);
+                startActivity(intent);
             }
         });
 

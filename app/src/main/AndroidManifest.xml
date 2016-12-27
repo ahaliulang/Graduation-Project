@@ -41,6 +41,8 @@
         <activity android:name=".activity.LoginActivity"/>
         <activity android:name=".activity.ChangePwdActivity"/>
         <activity android:name=".activity.UpdateProfileActivity"/>
+        <activity android:name=".activity.LearnActivity"/>
+        <activity android:name=".activity.FocusActivity"/>
 
 
         <service android:name=".services.CourseFetchService"/>
@@ -50,6 +52,10 @@
         <service android:name=".services.ChangePwdService"/>
         <service android:name=".services.UpdateProfileService"/>
         <service android:name=".services.GetProfileService"/>
+        <service android:name=".services.LearnService"/>
+        <service android:name=".services.DeleteLearnService"/>
+        <service android:name=".services.FocusService"/>
+        <service android:name=".services.DeleteFocusService"/>
 
     </application>
 

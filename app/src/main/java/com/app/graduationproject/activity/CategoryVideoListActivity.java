@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -22,7 +23,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.vov.vitamio.utils.Log;
+
 
 /**
  * Created by lenovo on 2016/10/25.

@@ -23,8 +23,6 @@ import com.app.graduationproject.fragment.CategoryFragment;
 import com.app.graduationproject.fragment.HomeFragment;
 import com.app.graduationproject.fragment.MyFragment;
 import com.app.graduationproject.utils.Permissions;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -230,15 +228,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //得到图片的全路径
                     Uri uri = data.getData();
                     crop(uri);
-                    //avatar.setImageURI(uri);
-                    Glide.with(this).load(uri)
+                    /*Glide.with(this).load(uri)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(mMyFragment.avatar);
+                            .into(mMyFragment.avatar);*/
                 }
             } else if (requestCode == PHOTO_REQUEST_CAMERA) {
                 //从相机返回的数据
+                Log.e("1223", "onActivityResult: 2" );
                 carmeraFile = new File(Environment.getExternalStorageDirectory()+"/dongdong", "temp.jpg");
                 if(carmeraFile.exists()){
+                    Log.e("1223", "onActivityResult: 3" );
                     crop(Uri.fromFile(carmeraFile));
                 }
 
@@ -279,6 +278,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 剪切图片
      */
     private void crop(Uri uri) {
+
+        Log.e("1223", "crop: 1" );
         //裁剪图片意图
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");

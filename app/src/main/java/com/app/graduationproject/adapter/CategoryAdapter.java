@@ -40,10 +40,6 @@ public class CategoryAdapter extends ArrayAdapter<Course>{
     }
 
 
-
-
-
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
        // final Category category = getItem(position); //获取当前项Category实例

@@ -2,6 +2,8 @@ package com.app.graduationproject.net;
 
 import com.app.graduationproject.db.Course;
 import com.app.graduationproject.db.CourseDetails;
+import com.app.graduationproject.db.Focus;
+import com.app.graduationproject.db.Learn;
 import com.app.graduationproject.db.Video;
 import com.app.graduationproject.entity.ChangePwdStatus;
 import com.app.graduationproject.entity.Student;
@@ -20,7 +22,7 @@ import retrofit2.http.POST;
  */
 public interface CloudAPI {
     //API的url 123.207.246.137 -- 192.168.0.35:8080
-    String BASE_URL = "http://123.207.246.137/CloudClass_Server/servlet/";
+    String BASE_URL = "http://192.168.0.35:8080/CloudClass_Server/servlet/";
 
     @GET("CourseServlet")
     Call<List<Course>> Results();
@@ -30,6 +32,7 @@ public interface CloudAPI {
 
     @GET("VideoServlet")
     Call<List<Video>> videoResult();
+
 
     @FormUrlEncoded
     @POST("LoginServlet")
@@ -48,6 +51,22 @@ public interface CloudAPI {
     @FormUrlEncoded
     @POST("GetProfileServlet")
     Call<Student> getProfile(@Field("account")String code);
+
+    @FormUrlEncoded
+    @POST("FocusServlet")
+    Call<List<Focus>> getFocus(@Field("studentCode") String studentCode);
+
+    @FormUrlEncoded
+    @POST("LearnServlet")
+    Call<List<Learn>> getLearn(@Field("studentCode") String studentCode);
+
+    @FormUrlEncoded
+    @POST("DeleteLearnServlet")
+    Call<Boolean> deleteLearn(@Field("courseCode") String courseCode);
+
+    @FormUrlEncoded
+    @POST("DeleteFocusServlet")
+    Call<Boolean> deleteFocus(@Field("courseCode") String courseCode);
 
 }
 
