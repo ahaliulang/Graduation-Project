@@ -1,13 +1,16 @@
 package com.app.graduationproject.activity;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -37,13 +40,29 @@ public class LoginActivity extends AppCompatActivity {
     private LocalBroadcastManager mLocalBroadcastManager;
     private LoginStatusReceiver loginStatusReceiver;
 
+    private Toolbar mToolbar;
+
     private SharedPreferences mSharedPreferences; //存储登录的账号
 
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.status_color));
         setContentView(R.layout.activity_login);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("登陆");
+
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         mSharedPreferences = this.getSharedPreferences("account",MODE_PRIVATE);
         loginStatusReceiver = new LoginStatusReceiver();
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);

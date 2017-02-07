@@ -1,11 +1,13 @@
 package com.app.graduationproject.activity;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -66,9 +68,11 @@ public class LearnActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private SharedPreferences mSharedPreferences; //存储登录的账号
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.status_color));
         setContentView(R.layout.learn_list_layout);
 
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
@@ -77,9 +81,17 @@ public class LearnActivity extends AppCompatActivity implements AdapterView.OnIt
         mSharedPreferences = this.getSharedPreferences("account",MODE_PRIVATE);
         code = mSharedPreferences.getString("accountId","");  //获取已登陆的存储的账号
         mRealm = Realm.getDefaultInstance();
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("正在学习");
+
         setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         Intent intent = new Intent(LearnActivity.this, LearnService.class);
         intent.putExtra("code",code);

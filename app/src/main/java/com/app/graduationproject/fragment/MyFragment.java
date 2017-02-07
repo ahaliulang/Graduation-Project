@@ -21,10 +21,11 @@ import android.widget.TextView;
 import com.app.graduationproject.R;
 import com.app.graduationproject.activity.ChangePwdActivity;
 import com.app.graduationproject.activity.FocusActivity;
-import com.app.graduationproject.activity.LoginActivity;
 import com.app.graduationproject.activity.LearnActivity;
+import com.app.graduationproject.activity.LoginActivity;
 import com.app.graduationproject.activity.UpdateProfileActivity;
 import com.app.graduationproject.view.BottomDialog;
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,12 +44,10 @@ public class MyFragment extends Fragment {
     private static final int RESULT_OK = -1;
 
 
-
     private static final int NAME_REQUESR_PROFILE = 4; //修改个人资料返回新的昵称
 
     private static final String PHOTO_FILE_NAME = "avatar.jpg";
-
-
+    public CircleImageView avatar; //头像图片
     private LinearLayout loginLayout;
     private LinearLayout study;
     private LinearLayout add;
@@ -57,15 +56,14 @@ public class MyFragment extends Fragment {
     private LinearLayout changePwd;
     private LinearLayout login_item;
     private Button logout;
-    public CircleImageView avatar; //头像图片
     private TextView tv_name; //名称
     private SharedPreferences mSharedPreferences;
     private boolean ishow;
-
     private String name;
+    public static String accountId;
 
 
-
+/*
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,33 +80,52 @@ public class MyFragment extends Fragment {
         super.onAttach(context);
         Log.e(TAG, "onAttach: " );
     }
+*/
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.my_fragment, container, false);
+        mSharedPreferences = getActivity().getSharedPreferences("account", Context.MODE_PRIVATE);
+        ishow = mSharedPreferences.getBoolean("show", false);
+        name = mSharedPreferences.getString("name", "点击登陆");
+        accountId = mSharedPreferences.getString("accountId", ""); //获取登陆Id
         initViews(view);
+        showLoginLayout(ishow);
 
-        try {
-            File file = new File(getActivity().getFilesDir(), PHOTO_FILE_NAME);
+        /*try {
+            File file = new File(getActivity().getFilesDir(), accountId + "_" + PHOTO_FILE_NAME);
             Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
             avatar.setImageBitmap(bitmap);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
+        }*/
+
         Log.e("show", ishow + "");
-        showLoginLayout(ishow);
-        Log.e(TAG, "onCreateView: " );
+        Log.e(TAG, "onCreateView: ");
         return view;
     }
+
+   /* @Override
+    public void onStart() {
+        super.onStart();
+        accountId = mSharedPreferences.getString("accountId", ""); //获取登陆Id
+        showLoginLayout(ishow);
+        Log.d(TAG, "onCreateView: " + accountId);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }*/
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initListener();
-        Log.e(TAG, "onActivityCreated: " );
+        Log.e(TAG, "onActivityCreated: ");
     }
-
 
 
     private void initListener() {
@@ -119,7 +136,7 @@ public class MyFragment extends Fragment {
                     Intent intent = new Intent(getContext(), LoginActivity.class);
                     //startActivity(intent);
                     startActivityForResult(intent, REQUEST_CODE);
-                    Log.e(TAG, "onClick: "+ishow);
+                    Log.e(TAG, "onClick: " + ishow);
                     return;
                 }
                 //激活系统图库，选择一张图片
@@ -144,7 +161,7 @@ public class MyFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), UpdateProfileActivity.class);
-                startActivityForResult(intent,NAME_REQUESR_PROFILE);
+                startActivityForResult(intent, NAME_REQUESR_PROFILE);
             }
         });
         study.setOnClickListener(new View.OnClickListener() {
@@ -182,7 +199,7 @@ public class MyFragment extends Fragment {
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
                 //editor.clear();
                 editor.putBoolean("show", false);
-                editor.putString("name","点击登陆");
+                editor.putString("name", "点击登陆");
                 editor.commit();
                 showLoginLayout(false);
                 ishow = false;
@@ -203,15 +220,14 @@ public class MyFragment extends Fragment {
     }
 
 
-
-     @Override
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Log.e(TAG, "onActivityResult: " );
+        Log.e(TAG, "onActivityResult: ");
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             Log.e("SSSSS", "ssss");
-            if(data != null){
+            if (data != null) {
                 String name = data.getStringExtra("name");
                 tv_name.setText(name);
             }
@@ -220,12 +236,13 @@ public class MyFragment extends Fragment {
             editor.putBoolean("show", true);
             ishow = true;
             editor.commit();
+            accountId = mSharedPreferences.getString("accountId", ""); //获取登陆Id
             showLoginLayout(true);
 
             boolean show = mSharedPreferences.getBoolean("show", false);
             Log.e("heihie", show + "");
-        } else if(requestCode == NAME_REQUESR_PROFILE && resultCode == RESULT_OK){
-            if(data != null){
+        } else if (requestCode == NAME_REQUESR_PROFILE && resultCode == RESULT_OK) {
+            if (data != null) {
                 String name = data.getStringExtra("name");
                 tv_name.setText(name);
             }
@@ -254,11 +271,18 @@ public class MyFragment extends Fragment {
             login_item.setVisibility(View.VISIBLE);
             //loginLayout.setEnabled(false);
             logout.setVisibility(View.VISIBLE);
+            // avatar.setImageDrawable(null);
             try {
-                File file = new File(getActivity().getFilesDir(), PHOTO_FILE_NAME);
+                File file = new File(getActivity().getFilesDir(), accountId + "_" + PHOTO_FILE_NAME);
                 Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
                 avatar.setImageBitmap(bitmap);
             } catch (FileNotFoundException e) {
+                Glide.with(this).load("http://123.207.246.137/CloudClass_Server/avatar/" + accountId + "_avatar.jpg")
+                        .into(avatar);
+                if (avatar.getDrawable() == null) {
+                    Log.d(TAG, "showLoginLayout: " + 1);
+                    Glide.with(this).load(R.drawable.ic_account_circle_white_48dp).into(avatar);
+                }
                 e.printStackTrace();
             }
         } else {
@@ -273,8 +297,6 @@ public class MyFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
     }
-
-
 
 
 }

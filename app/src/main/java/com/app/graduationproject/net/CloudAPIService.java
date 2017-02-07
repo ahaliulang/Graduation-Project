@@ -27,6 +27,7 @@ public class CloudAPIService {
                     return false;
                 }
             })
+            .setLenient()
             .create();
 
     private static final Retrofit cloudRetrofit = new Retrofit.Builder()

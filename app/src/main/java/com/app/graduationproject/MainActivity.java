@@ -1,9 +1,13 @@
 package com.app.graduationproject;
 
 
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentManager;
@@ -18,18 +22,30 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.graduationproject.activity.SearchActivity;
 import com.app.graduationproject.fragment.BaseFragment;
 import com.app.graduationproject.fragment.CategoryFragment;
 import com.app.graduationproject.fragment.HomeFragment;
 import com.app.graduationproject.fragment.MyFragment;
-import com.app.graduationproject.utils.Permissions;
+import com.app.graduationproject.net.CloudAPIService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final String TAG = "MainActivity";
+
     private Toolbar mToolbar;
     private TextView mHome;
     private TextView mCategory;
@@ -48,15 +64,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int PHOTO_REQUEST_CUT = 3;//结果
 
     private static final String PHOTO_FILE_NAME = "avatar.jpg";
+    private SharedPreferences mSharedPreferences;
     private File carmeraFile;
 
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.status_color));
+        //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
-        Permissions.verifyStoragePermissions(this);
+        //Permissions.verifyStoragePermissions(this);
+        mSharedPreferences = getSharedPreferences("account", Context.MODE_PRIVATE);
         initView();
+
+        Log.d(TAG, "onCreate: ");
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: ");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
     }
 
     private void initView() {
@@ -96,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
         return true;
     }
 
@@ -113,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.action_search:
                 //TODO searchview
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
                 break;
             default:
                 break;
@@ -129,30 +193,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mHome.setTextColor(getResources().getColor(R.color.colorBlack));
                 if (mBaseFragment == null) {
                     mBaseFragment = new BaseFragment();
-
+                    Log.d(TAG, "setChoice: "+1+"null");
                     transaction.add(R.id.main_ll_fragment, mBaseFragment);
                 } else {
-
+                    Log.d(TAG, "setChoice: "+1+"not null");
                     transaction.show(mBaseFragment);
                 }
+               // transaction.replace(R.id.main_ll_fragment, mBaseFragment);
                 break;
             case 2:
                 mCategory.setTextColor(getResources().getColor(R.color.colorBlack));
+               // mBaseFragment.mRefreshLayout.setRefreshing(false);
                 if (mCategoryFragment == null) {
                     mCategoryFragment = new CategoryFragment();
+                    Log.d(TAG, "setChoice: "+2+"null");
                     transaction.add(R.id.main_ll_fragment, mCategoryFragment);
                 } else {
                     transaction.show(mCategoryFragment);
+                    Log.d(TAG, "setChoice: "+2+"not null");
                 }
+                //transaction.replace(R.id.main_ll_fragment, mCategoryFragment);
                 break;
             case 3:
                 mMy.setTextColor(getResources().getColor(R.color.colorBlack));
+               // mBaseFragment.mRefreshLayout.setRefreshing(false);
                 if (mMyFragment == null) {
                     mMyFragment = new MyFragment();
+                    Log.d(TAG, "setChoice: "+3+"null");
                     transaction.add(R.id.main_ll_fragment, mMyFragment);
                 } else {
                     transaction.show(mMyFragment);
+                    Log.d(TAG, "setChoice: "+3+"not null");
                 }
+                //transaction.replace(R.id.main_ll_fragment, mMyFragment);
                 break;
             default:
                 break;
@@ -247,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Bitmap bitmap = data.getParcelableExtra("data");
                     mMyFragment.avatar.setImageBitmap(bitmap);
                     try {
-                        File file = new File(getFilesDir(), PHOTO_FILE_NAME);
+                        final File file = new File(getFilesDir(), MyFragment.accountId+"_"+PHOTO_FILE_NAME);
                         if (!file.exists()) file.createNewFile();
                         //通过得到文件的父文件，判断父文件是否存在
                         File parentFile = file.getParentFile();
@@ -256,6 +329,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         //把图片保存至本地
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(file));
+                        uploadAvatar(file);
+                        //TODO-上传至服务器
                     } catch (FileNotFoundException e) {
                         Log.e("TAG", "nonononono");
                         e.printStackTrace();
@@ -297,4 +372,77 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_CUT
         startActivityForResult(intent, PHOTO_REQUEST_CUT);
     }
+
+
+    //获取手机状态栏高度
+    public int getStatusBarHeight(){
+        Class<?> c = null;
+        Object obj = null;
+        Field field = null;
+        int x = 0,statusBarHeight = 0;
+        try{
+            c = Class.forName("com.android.internal.R$dimen");
+            obj = c.newInstance();
+            field = c.getField("status_bar_height");
+            x = Integer.parseInt(field.get(obj).toString());
+            statusBarHeight = getResources().getDimensionPixelSize(x);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return  statusBarHeight;
+    }
+
+    public void uploadAvatar(File file){
+        RequestBody requestFile = RequestBody.create(MediaType.parse("application/otcet-stream"),file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("avatar",file.getName(),requestFile);
+        Call<String> call = CloudAPIService.getInstance().uploadImage(body);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d(TAG, "onResponse: "+ "success");
+                Log.d(TAG, "onResponse: "+ response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.toString());
+            }
+        });
+    }
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

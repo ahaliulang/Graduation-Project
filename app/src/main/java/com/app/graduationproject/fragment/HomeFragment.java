@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.app.graduationproject.R;
-import com.app.graduationproject.activity.VideoDetailActivity;
 import com.app.graduationproject.adapter.HomeRecyclerAdapter;
 import com.app.graduationproject.services.CourseFetchService;
 
@@ -99,8 +98,14 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onItemClick(View v, int position) {
+                /*Toast.makeText(getActivity(), "你按了item", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), VideoDetailActivity.class);
-                startActivity(intent);
+                View transitionView = v.findViewById(R.id.iv);
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                        transitionView,getString(R.string.transition_video_img));
+                ActivityCompat.startActivity(getActivity(),intent,options.toBundle());*/
+
+               // startActivity(intent);
             }
         });
         return adapter;

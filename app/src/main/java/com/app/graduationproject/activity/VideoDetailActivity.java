@@ -1,7 +1,9 @@
 package com.app.graduationproject.activity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -38,9 +40,11 @@ public class VideoDetailActivity extends AppCompatActivity {
 
     private String course_code;
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.status_color));
         setContentView(R.layout.activity_video_detail);
 
         course_code = getIntent().getStringExtra(BaseFragment.EXTRA_COURSE_CODE);
@@ -51,6 +55,12 @@ public class VideoDetailActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("视频详情");
         setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
 
         fragmentManager = getSupportFragmentManager();
@@ -69,10 +79,10 @@ public class VideoDetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        setChoice(1);
+        setMyChoice(1);
     }
 
-    public void setChoice(int flag){
+    public void setMyChoice(int flag){
         transaction = fragmentManager.beginTransaction();
         hideFragments(transaction);
         if(flag == 1){

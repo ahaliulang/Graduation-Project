@@ -75,7 +75,7 @@ public class DetailFirstFragment extends Fragment{
         course = Course.fromCode(mRealm,course_code);
         details = CourseDetails.fromCode(mRealm,course_code);
         //videoList = Video.fromCode(mRealm,course_code);
-        videoList = Video.all(mRealm);
+        videoList = Video.fromCode(mRealm,course_code);
         for(int i=0;i<videoList.size();i++){
             Video video = videoList.get(i);
             Log.e("MYMY",video.getName());
@@ -149,7 +149,7 @@ public class DetailFirstFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 VideoDetailActivity activity = (VideoDetailActivity) getActivity();
-                activity.setChoice(2);
+                activity.setMyChoice(2);
             }
         });
         follow = (Button) view.findViewById(R.id.follow); //关注按钮

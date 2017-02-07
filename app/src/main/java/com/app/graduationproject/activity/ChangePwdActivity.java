@@ -1,13 +1,16 @@
 package com.app.graduationproject.activity;
 
-import android.app.Activity;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -23,7 +26,7 @@ import com.app.graduationproject.services.ChangePwdService;
 /**
  * Created by TAN on 2016/12/11.
  */
-public class ChangePwdActivity extends Activity{
+public class ChangePwdActivity extends AppCompatActivity {
 
     public static final String EXTRA_USER = "acctount";
     public static final String EXTRA_OLD_PASSWORD = "old_password";
@@ -39,6 +42,8 @@ public class ChangePwdActivity extends Activity{
     private String confirm_text;
     private String account;
 
+    private Toolbar mToolbar;
+
     private LocalBroadcastManager mLocalBroadcastManager;
     private ChangeStatusReceiver changeStatusReceiver;
 
@@ -46,10 +51,23 @@ public class ChangePwdActivity extends Activity{
 
 
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_change_pwd);
         super.onCreate(savedInstanceState);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.status_color));
+        setContentView(R.layout.activity_change_pwd);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("修改密码");
+
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         mSharedPreferences = this.getSharedPreferences("account",MODE_PRIVATE);
 

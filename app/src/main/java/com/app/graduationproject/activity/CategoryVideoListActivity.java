@@ -1,7 +1,11 @@
 package com.app.graduationproject.activity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -37,15 +41,29 @@ public class CategoryVideoListActivity extends AppCompatActivity{
     private Course course;
     private List<Course> courseList;
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.status_color));
         setContentView(R.layout.category_video_list_layout);
+        //设置状态栏颜色
         category = getIntent().getStringExtra(CategoryFragment.EXTRA_CATEGORY);
         mRealm = Realm.getDefaultInstance();
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle("分类>>医学");
+        mToolbar.setTitle("分类>>"+category);
+
         setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+
+
 
         initCategory();
        /* if(TextUtils.isEmpty(category)){
@@ -68,7 +86,12 @@ public class CategoryVideoListActivity extends AppCompatActivity{
                 Log.e("Couse",courseCode);
                 Intent intent = new Intent(CategoryVideoListActivity.this,VideoDetailActivity.class);
                 intent.putExtra(BaseFragment.EXTRA_COURSE_CODE,courseCode);
-                startActivity(intent);
+                View transitionView = view.findViewById(R.id.thumbnail);
+                ActivityOptionsCompat options =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(CategoryVideoListActivity.this,
+                                transitionView, getString(R.string.transition_video_img));
+                ActivityCompat.startActivity(CategoryVideoListActivity.this, intent, options.toBundle());
+                //startActivity(intent);
             }
         });
     }

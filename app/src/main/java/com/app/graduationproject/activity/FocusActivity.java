@@ -1,11 +1,13 @@
 package com.app.graduationproject.activity;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -62,10 +64,24 @@ public class FocusActivity extends AppCompatActivity implements
 
     private SharedPreferences mSharedPreferences; //存储登录的账号
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.status_color));
         setContentView(R.layout.learn_list_layout);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("关注的课程");
+
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("TAG","1122");
+                finish();
+            }
+        });
 
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
         codeReceiver = new CodeReceiver();
@@ -73,9 +89,6 @@ public class FocusActivity extends AppCompatActivity implements
         mSharedPreferences = this.getSharedPreferences("account",MODE_PRIVATE);
         code = mSharedPreferences.getString("accountId","");  //获取已登陆的存储的账号
         mRealm = Realm.getDefaultInstance();
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle("关注的课程");
-        setSupportActionBar(mToolbar);
 
         Intent intent = new Intent(FocusActivity.this, FocusService.class);
         intent.putExtra("code",code);

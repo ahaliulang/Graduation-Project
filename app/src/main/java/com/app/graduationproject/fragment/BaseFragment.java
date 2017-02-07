@@ -7,6 +7,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,11 +33,12 @@ import io.realm.Realm;
 
 
 public class BaseFragment extends Fragment{
+
     private static final String TAG = "BaseFragment";
 
     public static final String EXTRA_COURSE_CODE = "course_code";
     protected RecyclerView mRecyclerView;
-    protected SwipeRefreshLayout mRefreshLayout;
+    public SwipeRefreshLayout mRefreshLayout;
     protected LocalBroadcastManager mLocalBroadcastManager;
     protected RecyclerView.LayoutManager mLayoutManager;
     protected RecyclerView.Adapter mAdapter;
@@ -67,8 +70,20 @@ public class BaseFragment extends Fragment{
 
     @Override
     public void onPause() {
-        super.onPause();
+        if (mRefreshLayout!=null) {
+            mRefreshLayout.setRefreshing(false);
+            mRefreshLayout.destroyDrawingCache();
+            mRefreshLayout.clearAnimation();
+        }
         mLocalBroadcastManager.unregisterReceiver(updateResultReceiver);
+        super.onPause();
+
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     @Nullable
@@ -208,7 +223,11 @@ public class BaseFragment extends Fragment{
                 final Course course = adapter.getCourseAt(position);
                 Intent intent = new Intent(getActivity(), VideoDetailActivity.class); //转到视频详情活动
                 intent.putExtra(EXTRA_COURSE_CODE,course.getCode()); //携带课程号
-                getActivity().startActivity(intent);
+                View transitionView = v.findViewById(R.id.iv);
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                        transitionView,getString(R.string.transition_video_img));
+                ActivityCompat.startActivity(getActivity(),intent,options.toBundle());
+                //getActivity().startActivity(intent);
             }
         });
         return adapter;
@@ -250,7 +269,7 @@ public class BaseFragment extends Fragment{
                 return;
             }
 
-            if(mIsRefreshing){
+            if(mIsRefreshing && BaseFragment.this.isVisible()){
                 updateData();
                 Snackbar.make(mRefreshLayout,"已更新",Snackbar.LENGTH_SHORT).show();
                 mRecyclerView.smoothScrollToPosition(0);
@@ -260,6 +279,7 @@ public class BaseFragment extends Fragment{
             if(null == mAdapter || fetched == 0)
                 return;
            // ((BaseAdapter) mAdapter).updateInsertedData(fetched,trigger.equals(CourseFetchService.ACTION_FETCH_MORE));
+            setRefreshLayout(false);
         }
     }
 

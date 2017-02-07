@@ -3,6 +3,7 @@
     <color name="colorGray">#848383</color>
     <color name="colorBlack">#000000</color>
     <color name="colorPrimary">#333132</color>
+    <color name="status_color">#282627</color>
     <color name="colorPrimaryDark">#455A64</color>
     <color name="colorAccent">#455A64</color>
     <color name="colorPrimaryLight">#CFD8DC</color>

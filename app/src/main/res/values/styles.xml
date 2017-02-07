@@ -42,6 +42,10 @@
         <item name="android:windowExitAnimation">@anim/bottom_dialog_exit</item>
     </style>
 
+    <style name="AppTheme.NoActionBar.Translucent">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
 
 
 </resources>

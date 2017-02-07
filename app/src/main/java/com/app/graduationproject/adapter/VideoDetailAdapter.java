@@ -119,8 +119,6 @@ public class VideoDetailAdapter extends RecyclerView.Adapter<VideoDetailAdapter.
                     editor.putInt("index",index);
                     editor.commit();
                     notifyDataSetChanged();
-
-
                 }
             }
         });

@@ -44,6 +44,7 @@ public class ShowVideoActivity extends AppCompatActivity implements MediaPlayer.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         video_url = getIntent().getStringExtra(EXTRA_VIDEO_URL);
         //定义全屏参数
         int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
