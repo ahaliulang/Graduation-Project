@@ -26,10 +26,14 @@ import com.app.graduationproject.activity.LoginActivity;
 import com.app.graduationproject.activity.UpdateProfileActivity;
 import com.app.graduationproject.view.BottomDialog;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -277,12 +281,62 @@ public class MyFragment extends Fragment {
                 Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
                 avatar.setImageBitmap(bitmap);
             } catch (FileNotFoundException e) {
-                Glide.with(this).load("http://123.207.246.137/CloudClass_Server/avatar/" + accountId + "_avatar.jpg")
-                        .into(avatar);
-                if (avatar.getDrawable() == null) {
+               /* Glide.with(this).load("http://123.207.246.137/CloudClass_Server/avatar/" + accountId + "_avatar.jpg")
+                        .into(avatar);*/
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Bitmap bitmap = null;
+                        try {
+                            bitmap = Glide.with(MyFragment.this).load("http://123.207.246.137/CloudClass_Server/avatar/" + accountId + "_avatar.jpg")
+                                    .asBitmap().into(Target.SIZE_ORIGINAL,Target.SIZE_ORIGINAL)
+                                    .get();
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        } catch (ExecutionException e1) {
+                            e1.printStackTrace();
+                        }
+                        //当从服务器上获取到图片时，保存至本地
+                        if(bitmap != null){
+                            final Bitmap finalBitmap = bitmap;
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    avatar.setImageBitmap(finalBitmap);
+                                }
+                            });
+                            try {
+                                final File file = new File(getActivity().getFilesDir(), MyFragment.accountId+"_"+PHOTO_FILE_NAME);
+                                if (!file.exists()) file.createNewFile();
+                                //通过得到文件的父文件，判断父文件是否存在
+                                File parentFile = file.getParentFile();
+                                if (!parentFile.exists()) {
+                                    parentFile.mkdirs();
+                                }
+                                //把图片保存至本地
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(file));
+                            } catch (FileNotFoundException e1) {
+                                Log.e("TAG", "nonononono");
+                                e1.printStackTrace();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
+                        }else {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    avatar.setImageResource(R.drawable.ic_account_circle_white_48dp);
+                                }
+                            });
+                        }
+                    }
+                }).start();
+
+               /* if (avatar.getDrawable() == null) {
                     Log.d(TAG, "showLoginLayout: " + 1);
                     Glide.with(this).load(R.drawable.ic_account_circle_white_48dp).into(avatar);
-                }
+                }*/
                 e.printStackTrace();
             }
         } else {
