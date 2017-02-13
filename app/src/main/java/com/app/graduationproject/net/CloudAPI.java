@@ -25,7 +25,7 @@ import retrofit2.http.Part;
  */
 public interface CloudAPI {
     //API的url 123.207.246.137 -- 192.168.0.35:8080
-    String BASE_URL = "http://123.207.246.137/CloudClass_Server/servlet/";
+    String BASE_URL = "http://192.168.0.35:8080/CloudClass_Server/servlet/";
 
     @GET("CourseServlet")
     Call<List<Course>> Results();
@@ -65,11 +65,27 @@ public interface CloudAPI {
 
     @FormUrlEncoded
     @POST("DeleteLearnServlet")
-    Call<Boolean> deleteLearn(@Field("courseCode") String courseCode);
+    Call<Boolean> deleteLearn(@Field("studentCode") String studentCode,@Field("courseCode") String courseCode);
 
     @FormUrlEncoded
     @POST("DeleteFocusServlet")
-    Call<Boolean> deleteFocus(@Field("courseCode") String courseCode);
+    Call<Boolean> deleteFocus(@Field("studentCode") String studentCode,@Field("courseCode") String courseCode);
+
+    @FormUrlEncoded
+    @POST("AddLearnServlet")
+    Call<Boolean> addLearn(@Field("studentCode") String studentCode,@Field("courseCode") String courseCode);
+
+    @FormUrlEncoded
+    @POST("AddFocusServlet")
+    Call<Boolean> addFocus(@Field("studentCode") String studentCode,@Field("courseCode") String courseCode);
+
+    @FormUrlEncoded
+    @POST("FindIfFocused")
+    Call<Boolean> findIfFocused(@Field("studentCode") String studentCode,@Field("courseCode") String courseCode);
+
+    @FormUrlEncoded
+    @POST("FindIfLearned")
+    Call<Boolean> findIfLearned(@Field("studentCode") String studentCode,@Field("courseCode") String courseCode);
 
     //上传图像
     @Multipart

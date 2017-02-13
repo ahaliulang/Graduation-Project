@@ -20,7 +20,7 @@ public class DeleteFocusService extends IntentService{
 
     private Constants.NETWORK_EXCEPTION mExceptionCode;
 
-    private String code;
+
 
     public DeleteFocusService() {
         super(TAG);
@@ -34,13 +34,15 @@ public class DeleteFocusService extends IntentService{
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        code = intent.getStringExtra("code");
+
+        String studentCode = intent.getStringExtra("studentCode");
+        String courseCode = intent.getStringExtra("courseCode");
 
         try {
-            Boolean body = CloudAPIService.getInstance().deleteFocus(code).execute().body();
-            while (!body){
+            Boolean body = CloudAPIService.getInstance().deleteFocus(studentCode,courseCode).execute().body();
+            /*while (!body){
                 body = CloudAPIService.getInstance().deleteFocus(code).execute().body();
-            }
+            }*/
         } catch (SocketTimeoutException e) {
             mExceptionCode = Constants.NETWORK_EXCEPTION.TIMEOUT;
         } catch (UnknownHostException e) {

@@ -57,7 +57,7 @@ public class LearnActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private SlideView mLastSlideViewWithStatusOn;
 
-    private String code;//获取已登陆的存储的账号
+    private String accountId;//获取已登陆的存储的账号
 
     private LocalBroadcastManager mLocalBroadcastManager;
     private CodeReceiver codeReceiver;
@@ -79,7 +79,7 @@ public class LearnActivity extends AppCompatActivity implements AdapterView.OnIt
         codeReceiver = new CodeReceiver();
         mLocalBroadcastManager.registerReceiver(codeReceiver,new IntentFilter(LearnService.ACTION_CODE));
         mSharedPreferences = this.getSharedPreferences("account",MODE_PRIVATE);
-        code = mSharedPreferences.getString("accountId","");  //获取已登陆的存储的账号
+        accountId = mSharedPreferences.getString("accountId","");  //获取已登陆的存储的账号
         mRealm = Realm.getDefaultInstance();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -92,10 +92,13 @@ public class LearnActivity extends AppCompatActivity implements AdapterView.OnIt
                 finish();
             }
         });
-
+    }
+    @Override
+    protected void onResume() {
         Intent intent = new Intent(LearnActivity.this, LearnService.class);
-        intent.putExtra("code",code);
+        intent.putExtra("code",accountId);
         startService(intent);
+        super.onResume();
 
     }
 
@@ -190,9 +193,6 @@ public class LearnActivity extends AppCompatActivity implements AdapterView.OnIt
         }
     }
 
-
-
-
     private class LearnSlideAdapter extends android.widget.BaseAdapter{
 
         private int resId;
@@ -280,7 +280,8 @@ public class LearnActivity extends AppCompatActivity implements AdapterView.OnIt
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(LearnActivity.this, DeleteLearnService.class);
-                    intent.putExtra("code",courseItems.get(position).course.getCode());
+                    intent.putExtra("courseCode",courseItems.get(position).course.getCode());
+                    intent.putExtra("studentCode",accountId);
                     Log.e(TAG, "onClick: "+ courseItems.get(position).course.getCode());
                     startService(intent);
                     courseItems.remove(position);

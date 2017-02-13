@@ -16,24 +16,22 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
-import io.realm.Realm;
-
 /**
  * Created by lenovo on 2016/10/25.
  */
 public class CategoryAdapter extends ArrayAdapter<Course>{
 
     private int resourceId;
-    private Realm mRealm;
+   // private Realm mRealm;
     private Context mContext;
 
 
     private String mCategory;
 
-    public CategoryAdapter(Context context, int resource, List<Course> objects,Realm realm, String category) {
+    public CategoryAdapter(Context context, int resource, List<Course> objects,/*Realm realm,*/ String category) {
         super(context, resource,objects);
         this.mContext = context;
-        this.mRealm = realm;
+       // this.mRealm = realm;
         this.mCategory = category;
        // detailList = CourseDetails.fromCate(mRealm,mCategory); //通过类别获得课程详细类
         resourceId = resource;

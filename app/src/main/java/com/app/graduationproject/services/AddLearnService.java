@@ -11,20 +11,19 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 /**
- * Created by Administrator on 2016/12/27.
+ * Created by Administrator on 2017/2/13.
  */
 
-public class DeleteLearnService extends IntentService{
+public class AddLearnService extends IntentService{
 
-    private static final String TAG = "DeleteLearnService";
-
+    private static final String TAG = "AddLearnService";
     private Constants.NETWORK_EXCEPTION mExceptionCode;
+    private String courseCode;
+    private String studentCode;
 
-
-    public DeleteLearnService() {
+    public AddLearnService() {
         super(TAG);
     }
-
 
     @Override
     public void onCreate() {
@@ -34,19 +33,12 @@ public class DeleteLearnService extends IntentService{
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
-        String studentCode = intent.getStringExtra("studentCode");
-        String courseCode = intent.getStringExtra("courseCode");
+        courseCode = intent.getStringExtra("courseCode");
+        studentCode = intent.getStringExtra("studentCode");
 
         try {
-            Boolean body = CloudAPIService.getInstance().deleteLearn(studentCode,courseCode).execute().body();
-            /*Intent intent2 = new Intent(this, LearnService.class);
-            intent.putExtra("code",accountId);
-            startService(intent2);*/
-           /* while (!body){
-                body = CloudAPIService.getInstance().deleteLearn(code).execute().body();
-            }*/
-        }catch (SocketTimeoutException e) {
+            Boolean body = CloudAPIService.getInstance().addLearn(studentCode, courseCode).execute().body();
+        } catch (SocketTimeoutException e) {
             mExceptionCode = Constants.NETWORK_EXCEPTION.TIMEOUT;
         } catch (UnknownHostException e) {
             mExceptionCode = Constants.NETWORK_EXCEPTION.UNKNOWN_HOST;
@@ -56,5 +48,32 @@ public class DeleteLearnService extends IntentService{
             e.printStackTrace();
         }
     }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

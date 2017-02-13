@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.graduationproject.R;
+import com.app.graduationproject.activity.AddCourse;
 import com.app.graduationproject.activity.ChangePwdActivity;
 import com.app.graduationproject.activity.FocusActivity;
 import com.app.graduationproject.activity.LearnActivity;
@@ -182,6 +183,13 @@ public class MyFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), AddCourse.class);
+                startActivity(intent);
+            }
+        });
 
 
         logout.setOnClickListener(new View.OnClickListener() {
@@ -280,6 +288,7 @@ public class MyFragment extends Fragment {
                 File file = new File(getActivity().getFilesDir(), accountId + "_" + PHOTO_FILE_NAME);
                 Bitmap bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
                 avatar.setImageBitmap(bitmap);
+                Log.d(TAG, "showLoginLayout: "+ "有文件");
             } catch (FileNotFoundException e) {
                /* Glide.with(this).load("http://123.207.246.137/CloudClass_Server/avatar/" + accountId + "_avatar.jpg")
                         .into(avatar);*/
@@ -297,8 +306,10 @@ public class MyFragment extends Fragment {
                         } catch (ExecutionException e1) {
                             e1.printStackTrace();
                         }
+                        Log.d(TAG, "run: " + "开启新线程");
                         //当从服务器上获取到图片时，保存至本地
                         if(bitmap != null){
+                            Log.d(TAG, "run: " + "开启新线程有图片");
                             final Bitmap finalBitmap = bitmap;
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
@@ -323,6 +334,7 @@ public class MyFragment extends Fragment {
                                 e1.printStackTrace();
                             }
                         }else {
+                            Log.d(TAG, "run: " + "开启新线程没有图片");
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

@@ -50,6 +50,7 @@
         <activity android:name=".activity.UpdateProfileActivity" />
         <activity android:name=".activity.LearnActivity" />
         <activity android:name=".activity.FocusActivity" />
+        <activity android:name=".activity.AddCourse" />
         <activity
             android:name=".activity.SearchActivity"
             android:windowSoftInputMode="stateVisible|adjustPan">
@@ -67,6 +68,10 @@
         <service android:name=".services.DeleteLearnService" />
         <service android:name=".services.FocusService" />
         <service android:name=".services.DeleteFocusService" />
+        <service android:name=".services.FindIfFocusedService"/>
+        <service android:name=".services.FindIfLearnedService"/>
+        <service android:name=".services.AddFocusService"/>
+        <service android:name=".services.AddLearnService"/>
 
     </application>
 

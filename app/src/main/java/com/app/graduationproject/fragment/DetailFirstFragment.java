@@ -1,9 +1,14 @@
 package com.app.graduationproject.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,9 +27,16 @@ import com.app.graduationproject.adapter.VideoDetailAdapter;
 import com.app.graduationproject.db.Course;
 import com.app.graduationproject.db.CourseDetails;
 import com.app.graduationproject.db.Video;
+import com.app.graduationproject.services.AddFocusService;
+import com.app.graduationproject.services.AddLearnService;
+import com.app.graduationproject.services.DeleteFocusService;
+import com.app.graduationproject.services.DeleteLearnService;
+import com.app.graduationproject.services.FindIfFocusedService;
+import com.app.graduationproject.services.FindIfLearnedService;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+
 
 /**
  * Created by lenovo on 2016/10/23.
@@ -32,11 +44,11 @@ import io.realm.RealmResults;
 public class DetailFirstFragment extends Fragment{
 
 
-    private Button more;   //查看更过按钮
+    private Button more;   //查看更多按钮
     private RecyclerView mRecyclerView; //显示的部分课程列表
     private Button loadingList;
-    private Button follow;
-    private Button start;
+    private static Button follow;
+    private static Button start;
     private TextView content;
     private Course course;
     private CourseDetails details;
@@ -49,16 +61,76 @@ public class DetailFirstFragment extends Fragment{
     private TextView video_detail_desc;
     private TextView teacher;
     private TextView agency,period,category,type,subject,profession,concrete_prof,target;
+    private static Boolean focus;
+    private static Boolean learn;
+    private LocalBroadcastManager mLocalBroadcastManager;
+    private LearnAndFocusReceiver receiver;
+    private SharedPreferences mSharedPreferences;
 
+    private static final String TAG = "DetailFirstFragment";
 
 
     private String course_code;
+    private String accountId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRealm = Realm.getDefaultInstance();
+        mSharedPreferences = getActivity().getSharedPreferences("account", Context.MODE_PRIVATE);
         course_code = getActivity().getIntent().getStringExtra(BaseFragment.EXTRA_COURSE_CODE);
+        accountId = mSharedPreferences.getString("accountId", ""); //获取登陆Id
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
+        receiver = new LearnAndFocusReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(FindIfFocusedService.ACTION_CODE);
+        filter.addAction(FindIfLearnedService.ACTION_CODE);
+        mLocalBroadcastManager.registerReceiver(receiver,filter);
+
+
+        Log.d(TAG, "onCreate: "+"创建");
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d(TAG, "onAttach: ");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "onDestroyView: ");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d(TAG, "onDetach: ");
     }
 
     @Nullable
@@ -70,8 +142,24 @@ public class DetailFirstFragment extends Fragment{
     }
 
     @Override
+    public void onDestroy() {
+        mLocalBroadcastManager.unregisterReceiver(receiver);
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        Intent focus = new Intent(getActivity(), FindIfFocusedService.class);
+        focus.putExtra("studentCode",accountId);
+        focus.putExtra("courseCode",course_code);
+        getActivity().startService(focus);
+        Intent learn = new Intent(getActivity(), FindIfLearnedService.class);
+        learn.putExtra("studentCode",accountId);
+        learn.putExtra("courseCode",course_code);
+        getActivity().startService(learn);
         super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated: ");
         course = Course.fromCode(mRealm,course_code);
         details = CourseDetails.fromCode(mRealm,course_code);
         //videoList = Video.fromCode(mRealm,course_code);
@@ -156,14 +244,38 @@ public class DetailFirstFragment extends Fragment{
         follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if(follow.getText().equals("关注")){
+                    Intent intent = new Intent(getActivity(), AddFocusService.class);
+                    intent.putExtra("studentCode",accountId);
+                    intent.putExtra("courseCode",course_code);
+                    getActivity().startService(intent);
+                    follow.setText("取消关注");
+                }else {
+                    Intent intent = new Intent(getActivity(), DeleteFocusService.class);
+                    intent.putExtra("studentCode",accountId);
+                    intent.putExtra("courseCode",course_code);
+                    getActivity().startService(intent);
+                    follow.setText("关注");
+                }
             }
         });
         start = (Button) view.findViewById(R.id.start); //开始学习
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if(start.getText().equals("添加课程")){
+                    Intent intent = new Intent(getActivity(), AddLearnService.class);
+                    intent.putExtra("studentCode",accountId);
+                    intent.putExtra("courseCode",course_code);
+                    getActivity().startService(intent);
+                    start.setText("删除课程");
+                }else {
+                    Intent intent = new Intent(getActivity(), DeleteLearnService.class);
+                    intent.putExtra("studentCode",accountId);
+                    intent.putExtra("courseCode",course_code);
+                    getActivity().startService(intent);
+                    start.setText("添加课程");
+                }
             }
         });
 
@@ -205,5 +317,27 @@ public class DetailFirstFragment extends Fragment{
             }
         });
         return adapter;
+    }
+
+    private static class LearnAndFocusReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(FindIfFocusedService.ACTION_CODE)){
+                focus = intent.getBooleanExtra(FindIfFocusedService.EXTRA_CODE,false);
+                Log.d(TAG, "onReceive: "+focus);
+                if(focus){
+                    follow.setText("取消关注");
+                }else {
+                    follow.setText("关注");
+                }
+            }else if(intent.getAction().equals(FindIfLearnedService.ACTION_CODE)){
+                learn = intent.getBooleanExtra(FindIfLearnedService.EXTRA_CODE,false);
+                if(learn){
+                    start.setText("删除课程");
+                }else {
+                    start.setText("添加课程");
+                }
+            }
+        }
     }
 }

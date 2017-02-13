@@ -21,7 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22dp"
-            android:text="内科学"/>
+            android:text="内科学"
+            android:singleLine="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,7 +56,8 @@
                 android:id="@+id/video_clip"
                 android:text="共24人学习"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:singleLine="true"/>
             <ImageView
                 android:layout_marginTop="2dp"
                 android:layout_marginLeft="10dp"
@@ -66,7 +68,8 @@
                 android:id="@+id/people"
                 android:text="共4210次访问"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:singleLine="true"/>
         </LinearLayout>
 
     </LinearLayout>

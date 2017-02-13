@@ -5,6 +5,7 @@ import android.content.Context;
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
+import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -21,6 +22,7 @@ public class CourseDetails extends RealmObject{
     //课程学时
     private String period;
     //课程类别
+    @Index
     private String category;
     //课程类型
     private String type;
@@ -67,6 +69,10 @@ public class CourseDetails extends RealmObject{
 
     public static RealmResults<CourseDetails> fromCate(Realm realm,String category){
         return realm.where(CourseDetails.class).equalTo("category",category).findAll();
+    }
+
+    public static RealmResults<CourseDetails> courseCate(Realm realm){
+        return  realm.where(CourseDetails.class).distinct("category");
     }
 
 
