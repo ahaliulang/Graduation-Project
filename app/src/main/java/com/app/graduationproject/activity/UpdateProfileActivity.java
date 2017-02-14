@@ -283,7 +283,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 }
             }else if(intent.getAction().equals(GetProfileService.ACTION_STUDENT)){
                 Student student = intent.getParcelableExtra(GetProfileService.KEY);
-                Toast.makeText(context,"u see"+student.getName(),Toast.LENGTH_SHORT).show();
                 Log.e("receiver", "onReceive: "+"resds" );
                 et_name.setText(student.getName());
                 et_phone.setText(student.getPhone());

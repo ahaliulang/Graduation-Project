@@ -26,13 +26,13 @@ public class CategoryAdapter extends ArrayAdapter<Course>{
     private Context mContext;
 
 
-    private String mCategory;
+   // private String mCategory;
 
-    public CategoryAdapter(Context context, int resource, List<Course> objects,/*Realm realm,*/ String category) {
+    public CategoryAdapter(Context context, int resource, List<Course> objects/*Realm realm, String category*/) {
         super(context, resource,objects);
         this.mContext = context;
        // this.mRealm = realm;
-        this.mCategory = category;
+       // this.mCategory = category;
        // detailList = CourseDetails.fromCate(mRealm,mCategory); //通过类别获得课程详细类
         resourceId = resource;
     }

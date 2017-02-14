@@ -40,7 +40,7 @@
             android:id="@+id/video_detail_iv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/test"
+            android:src="@drawable/image_default"
             android:transitionName="@string/transition_video_img"
             android:scaleType="centerCrop" />
         <LinearLayout

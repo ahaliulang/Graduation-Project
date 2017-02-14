@@ -8,9 +8,9 @@
         android:title="关于"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_clear_cache"
+        android:id="@+id/action_newversion"
         android:orderInCategory="1"
-        android:title="更多"
+        android:title="检查新版本"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_search"

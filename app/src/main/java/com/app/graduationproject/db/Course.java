@@ -58,6 +58,14 @@ public class Course extends RealmObject{
         return realm.where(Course.class).equalTo("code",code).findFirst();
     }
 
+    public static RealmResults<Course> fromNameKey(Realm realm, String key){
+        return realm.where(Course.class).contains("name",key).findAll();
+    }
+
+    public static RealmResults<Course> fromTeacherKey(Realm realm,String key){
+        return realm.where(Course.class).contains("teacher",key).findAll();
+    }
+
     public static void clearAll(Realm realm){
         final RealmResults<Course> allCourse = realm.where(Course.class).findAll();
         realm.executeTransaction(new Realm.Transaction() {
@@ -67,6 +75,8 @@ public class Course extends RealmObject{
             }
         });
     }
+
+
 
 
     public String getImgurl() {

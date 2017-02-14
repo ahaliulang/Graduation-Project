@@ -63,14 +63,10 @@ public class CategoryVideoListActivity extends AppCompatActivity{
         });
 
 
-
-
         initCategory();
-       /* if(TextUtils.isEmpty(category)){
-            return;
-        }*/
+
         CategoryAdapter adapter = new CategoryAdapter(CategoryVideoListActivity.this,
-                R.layout.category_video_list_item,courseList,category);
+                R.layout.category_video_list_item,courseList/*,category*/);
         if(adapter.getCount() == 0){
             Toast.makeText(this,"抱歉，没有找到相关课程",Toast.LENGTH_SHORT).show();
             finish();

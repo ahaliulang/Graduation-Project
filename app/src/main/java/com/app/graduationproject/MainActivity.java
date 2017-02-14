@@ -157,21 +157,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-
         return true;
     }
 
     //菜单选择
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_about:
                 //TODO
                 break;
-            case R.id.action_clear_cache:
-                //TODO
+            case R.id.action_newversion:
+                Toast.makeText(this,"当前已是最新版本",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_search:
                 //TODO searchview

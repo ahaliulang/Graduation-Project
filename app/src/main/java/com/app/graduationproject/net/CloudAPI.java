@@ -25,7 +25,7 @@ import retrofit2.http.Part;
  */
 public interface CloudAPI {
     //API的url 123.207.246.137 -- 192.168.0.35:8080
-    String BASE_URL = "http://192.168.0.35:8080/CloudClass_Server/servlet/";
+    String BASE_URL = "http://123.207.246.137/CloudClass_Server/servlet/";
 
     @GET("CourseServlet")
     Call<List<Course>> Results();

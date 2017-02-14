@@ -29,6 +29,7 @@
     </FrameLayout>
 
     <com.app.graduationproject.view.ListViewCompat
+        android:visibility="gone"
         android:id="@+id/learn_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,4 +39,35 @@
         android:dividerHeight="1.0px"
         android:drawSelectorOnTop="false"
         android:listSelector="@android:color/transparent"/>
+
+    <LinearLayout
+        android:id="@+id/showTips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="38dp"
+        android:visibility="gone">
+        <TextView
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HI,您没有学习的课程"/>
+        <TextView
+            android:id="@+id/toAdd"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="添选课程"/>
+        <View
+            android:layout_gravity="center"
+            android:layout_width="70dp"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            />
+    </LinearLayout>
+
 </LinearLayout>

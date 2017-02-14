@@ -72,7 +72,7 @@ public class AddCourse extends AppCompatActivity{
         mainAdapter.setSelectItem(0);
         mainlist.setAdapter(mainAdapter);
         CategoryAdapter categoryAdapter = new CategoryAdapter(AddCourse.this,R.layout.category_video_list_item,
-                initCategory(courses.get(0).toString()),courses.get(0).toString());
+                initCategory(courses.get(0).toString())/*,courses.get(0).toString()*/);
         morelist.setAdapter(categoryAdapter);
         categoryAdapter.notifyDataSetChanged();
         mainlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -83,7 +83,7 @@ public class AddCourse extends AppCompatActivity{
                 String category = tv_category.getText().toString();
 
                 CategoryAdapter adapter = new CategoryAdapter(AddCourse.this,
-                        R.layout.category_video_list_item,initCategory(category),category);
+                        R.layout.category_video_list_item,initCategory(category)/*,category*/);
                 morelist.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 mainAdapter.setSelectItem(i);

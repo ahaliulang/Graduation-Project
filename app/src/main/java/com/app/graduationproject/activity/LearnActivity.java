@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.graduationproject.R;
@@ -48,7 +49,6 @@ public class LearnActivity extends AppCompatActivity implements AdapterView.OnIt
     private static final String TAG = "LearnActivity";
 
     private Toolbar mToolbar;
-    private ListViewCompat learnListview;
     private Realm mRealm;
    // private Course course;
   //  private List<Course> courseList;
@@ -62,6 +62,7 @@ public class LearnActivity extends AppCompatActivity implements AdapterView.OnIt
     private LocalBroadcastManager mLocalBroadcastManager;
     private CodeReceiver codeReceiver;
     private LearnSlideAdapter adapter;
+
 
     private TextView delete;
 
@@ -139,57 +140,41 @@ public class LearnActivity extends AppCompatActivity implements AdapterView.OnIt
         @Override
         public void onReceive(Context context, Intent intent) {
             ArrayList<CharSequence> codeList = intent.getCharSequenceArrayListExtra(LearnService.EXTRA_CODE);
-            //courseList = new ArrayList<Course>();
+
             mCourseItems = new ArrayList<>();
+
+            ListViewCompat learnListview = (ListViewCompat) findViewById(R.id.learn_list);
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.showTips);
+            TextView toAdd = (TextView) findViewById(R.id.toAdd);
 
             for(int i=0,size = codeList.size();i<size;i++){
                 CourseItem courseItem = new CourseItem();
                 courseItem.course = Course.fromCode(mRealm,codeList.get(i).toString());
                 Log.e("LLO", "onReceive: "+codeList.get(i).toString());
-               // courseItem.course = course;
-               // courseList.add(course);
                 mCourseItems.add(courseItem);
             }
-
+            if(mCourseItems.size() <= 0){
+                linearLayout.setVisibility(View.VISIBLE);
+                learnListview.setVisibility(View.GONE);
+                toAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent toAdd = new Intent(LearnActivity.this,AddCourse.class);
+                        startActivity(toAdd);
+                    }
+                });
+                return;
+            }
             adapter = new LearnSlideAdapter(LearnActivity.this, R.layout.learn_list_item,mCourseItems);
             for(CourseItem courseItem1:mCourseItems){
                 Course course = courseItem1.course;
                 Log.e(TAG, "onReceive: "+course.getCode() );
             }
-
-            learnListview = (ListViewCompat) findViewById(R.id.learn_list);
-            //learnListview.setAdapter(new TestAdapter(LearnActivity.this,R.layout.learn_list_item));
+            linearLayout.setVisibility(View.GONE);
+            learnListview.setVisibility(View.VISIBLE);
             learnListview.setAdapter(adapter);
             learnListview.setOnItemClickListener(LearnActivity.this);
 
-
-
-            /*learnListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    TextView textView = (TextView) view.findViewById(R.id.courseCode);
-                    String courseCode = textView.getText().toString();
-                    Log.e("Couse", courseCode);
-                    Intent intent = new Intent(LearnActivity.this, VideoDetailActivity.class);
-                    intent.putExtra(BaseFragment.EXTRA_COURSE_CODE, courseCode);
-                    startActivity(intent);
-                    Button button = (Button) view.findViewById(R.id.btnTop);
-                    button.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Log.e("Couse", "button");
-                        }
-                    });
-                }
-            });*/
-         /*   learnListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    TextView  textView = (TextView) findViewById(R.id.tv_text);
-                    Log.e("sdsds", "onItemClick: "+ 1221);
-                }
-            });
-*/
         }
     }
 

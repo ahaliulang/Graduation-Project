@@ -19,7 +19,7 @@
         <ImageView
             android:id="@+id/iv"
             android:scaleType="centerCrop"
-            android:src="@drawable/test"
+            android:src="@drawable/image_default"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

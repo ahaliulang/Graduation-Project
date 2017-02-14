@@ -172,22 +172,35 @@ public class MyFragment extends Fragment {
         study.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), LearnActivity.class);
-                startActivity(intent);
+                if(ishow){
+                    Intent intent = new Intent(getContext(), LearnActivity.class);
+                    startActivity(intent);
+                    return;
+                }
+                showLoginAlertDialog();
+
             }
         });
         fellow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), FocusActivity.class);
-                startActivity(intent);
+                if (ishow) {
+                    Intent intent = new Intent(getContext(), FocusActivity.class);
+                    startActivity(intent);
+                    return;
+                }
+                showLoginAlertDialog();
             }
         });
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), AddCourse.class);
-                startActivity(intent);
+                if (ishow) {
+                    Intent intent = new Intent(getContext(), AddCourse.class);
+                    startActivity(intent);
+                    return;
+                }
+                showLoginAlertDialog();
             }
         });
 
@@ -223,6 +236,19 @@ public class MyFragment extends Fragment {
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void showLoginAlertDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("请登陆后查看");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();

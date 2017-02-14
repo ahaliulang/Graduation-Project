@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -19,6 +18,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.app.graduationproject.R;
 import com.app.graduationproject.activity.VideoDetailActivity;
@@ -259,7 +259,8 @@ public class BaseFragment extends Fragment{
                     intent.getSerializableExtra(CourseFetchService.EXTRA_EXCEPTION_CODE);
             if(fetched == 0 && trigger.equals(CourseFetchService.ACTION_FETCH_MORE)){
                 mIsNoMore = true;
-                Snackbar.make(mRefreshLayout,"没有更多内容了",Snackbar.LENGTH_SHORT).show();
+               // Snackbar.make(mRefreshLayout,"没有更多内容了",Snackbar.LENGTH_SHORT).show();
+               // Toast.makeText(getContext(),"已到达底部",Toast.LENGTH_SHORT).show();
             }
 
             setRefreshLayout(false);
@@ -271,7 +272,8 @@ public class BaseFragment extends Fragment{
 
             if(mIsRefreshing && BaseFragment.this.isVisible()){
                 updateData();
-                Snackbar.make(mRefreshLayout,"已更新",Snackbar.LENGTH_SHORT).show();
+                //Snackbar.make(mRefreshLayout,"已更新",Snackbar.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),"已更新",Toast.LENGTH_SHORT).show();
                 mRecyclerView.smoothScrollToPosition(0);
             }
             setFetchingFlagsFalse();
