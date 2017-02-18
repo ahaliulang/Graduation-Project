@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -26,7 +25,7 @@ import com.app.graduationproject.services.ChangePwdService;
 /**
  * Created by TAN on 2016/12/11.
  */
-public class ChangePwdActivity extends AppCompatActivity {
+public class ChangePwdActivity extends BaseActivity {
 
     public static final String EXTRA_USER = "acctount";
     public static final String EXTRA_OLD_PASSWORD = "old_password";

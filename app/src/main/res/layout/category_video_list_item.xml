@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:orientation="horizontal" android:layout_width="match_parent"
-android:layout_height="80dp">
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@color/windowBackground"
+    android:orientation="horizontal">
 
-<include layout="@layout/course_listitem_merge"/>
+    <include layout="@layout/course_listitem_merge" />
 
 </LinearLayout>

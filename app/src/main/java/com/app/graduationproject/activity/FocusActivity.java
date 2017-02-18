@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.graduationproject.R;
@@ -43,13 +43,12 @@ import static com.app.graduationproject.R.id.courseCode;
  * Created by Administrator on 2016/12/27.
  */
 
-public class FocusActivity extends AppCompatActivity implements
+public class FocusActivity extends BaseActivity implements
         AdapterView.OnItemClickListener, SlideView.OnSlideListener {
 
     private static final String TAG = "FocusActivity";
 
     private Toolbar mToolbar;
-    private ListViewCompat focusListview;
     private Realm mRealm;
 
     private List<CourseItem> mCourseItems;
@@ -167,6 +166,11 @@ public class FocusActivity extends AppCompatActivity implements
             //courseList = new ArrayList<Course>();
             mCourseItems = new ArrayList<>();
 
+
+            ListViewCompat focusListview = (ListViewCompat) findViewById(R.id.learn_list);
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.showTips);
+            TextView toAdd = (TextView) findViewById(R.id.toAdd);
+
             for(int i=0,size = codeList.size();i<size;i++){
                 CourseItem courseItem = new CourseItem();
                 courseItem.course = Course.fromCode(mRealm,codeList.get(i).toString());
@@ -175,15 +179,26 @@ public class FocusActivity extends AppCompatActivity implements
                 // courseList.add(course);
                 mCourseItems.add(courseItem);
             }
+            if(mCourseItems.size() <= 0){
+                linearLayout.setVisibility(View.VISIBLE);
+                focusListview.setVisibility(View.GONE);
+                toAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent toAdd = new Intent(FocusActivity.this,AddCourse.class);
+                        startActivity(toAdd);
+                    }
+                });
+                return;
+            }
 
             adapter = new FocusSlideAdapter(FocusActivity.this, R.layout.learn_list_item,mCourseItems);
             for(CourseItem courseItem1:mCourseItems){
                 Course course = courseItem1.course;
                 Log.e(TAG, "onReceive: "+course.getCode() );
             }
-
-            focusListview = (ListViewCompat) findViewById(R.id.learn_list);
-            //learnListview.setAdapter(new TestAdapter(LearnActivity.this,R.layout.learn_list_item));
+            linearLayout.setVisibility(View.GONE);
+            focusListview.setVisibility(View.VISIBLE);
             focusListview.setAdapter(adapter);
             focusListview.setOnItemClickListener(FocusActivity.this);
         }

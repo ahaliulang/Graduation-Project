@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -27,7 +26,7 @@ import io.vov.vitamio.utils.Log;
 /**
  * Created by TAN on 2016/11/20.
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     public static final String EXTRA_USER = "user";
     public static final String EXTRA_PASSWROD = "password";

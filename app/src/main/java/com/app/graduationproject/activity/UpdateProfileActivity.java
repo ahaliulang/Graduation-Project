@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,7 +31,7 @@ import java.util.regex.Pattern;
  * Created by Administrator on 2016/12/19.
  */
 
-public class UpdateProfileActivity extends AppCompatActivity {
+public class UpdateProfileActivity extends BaseActivity {
 
 
 

@@ -2,6 +2,7 @@ package com.app.graduationproject;
 
 import android.app.Application;
 
+import cn.bingoogolapple.swipebacklayout.BGASwipeBackManager;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -17,5 +18,6 @@ public class APP extends Application{
                 .schemaVersion(2)
                 .deleteRealmIfMigrationNeeded()
                 .build());
+        BGASwipeBackManager.getInstance().init(this);
     }
 }

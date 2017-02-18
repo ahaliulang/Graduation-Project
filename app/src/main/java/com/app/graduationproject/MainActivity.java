@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.graduationproject.activity.AboutActivity;
 import com.app.graduationproject.activity.SearchActivity;
 import com.app.graduationproject.fragment.BaseFragment;
 import com.app.graduationproject.fragment.CategoryFragment;
@@ -165,7 +166,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_about:
-                //TODO
+                Intent about = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(about);
                 break;
             case R.id.action_newversion:
                 Toast.makeText(this,"当前已是最新版本",Toast.LENGTH_SHORT).show();

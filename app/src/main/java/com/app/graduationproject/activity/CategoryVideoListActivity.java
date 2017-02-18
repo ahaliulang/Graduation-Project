@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +31,7 @@ import io.realm.RealmResults;
 /**
  * Created by lenovo on 2016/10/25.
  */
-public class CategoryVideoListActivity extends AppCompatActivity{
+public class CategoryVideoListActivity extends BaseActivity{
 
     private Toolbar mToolbar;
     private ListView categyListview;

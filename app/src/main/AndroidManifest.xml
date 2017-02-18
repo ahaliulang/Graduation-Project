@@ -14,8 +14,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/TranslucentTheme">
+        android:theme="@style/AppTheme.NoActionBar.Translucent">
         <activity android:name=".MainActivity"
+            android:theme="@style/TranslucentTheme"
             android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,6 +52,10 @@
         <activity android:name=".activity.LearnActivity" />
         <activity android:name=".activity.FocusActivity" />
         <activity android:name=".activity.AddCourse" />
+        <activity android:name=".activity.AboutActivity"
+            android:label="关于"/>
+        <activity android:name=".activity.WebActivity"
+            android:label=""/>
         <activity
             android:name=".activity.SearchActivity"
             android:windowSoftInputMode="stateVisible|adjustPan">

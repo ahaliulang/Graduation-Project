@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -31,7 +30,7 @@ import io.realm.RealmResults;
  * Created by Administrator on 2017/2/13.
  */
 
-public class AddCourse extends AppCompatActivity{
+public class AddCourse extends BaseActivity{
 
     private static final String TAG = "AddCourse";
 
