@@ -26,7 +26,6 @@ import com.app.graduationproject.activity.AboutActivity;
 import com.app.graduationproject.activity.SearchActivity;
 import com.app.graduationproject.fragment.BaseFragment;
 import com.app.graduationproject.fragment.CategoryFragment;
-import com.app.graduationproject.fragment.HomeFragment;
 import com.app.graduationproject.fragment.MyFragment;
 import com.app.graduationproject.net.CloudAPIService;
 
@@ -52,8 +51,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mCategory;
     private TextView mMy;
     private long mExitTime = 0;
-    private boolean mIsSearching;//搜索框是否出现，true为出现，false为隐藏
-    private HomeFragment mHomeFragment;
     private BaseFragment mBaseFragment;
     private MyFragment mMyFragment;
     private CategoryFragment mCategoryFragment;

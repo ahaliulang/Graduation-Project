@@ -11,11 +11,37 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        resConfigs "zh"
+        ndk{
+            abiFilters "armeabi","armable-x86"
+        }
     }
+
+    //签名配置
+    signingConfigs{
+        /*debug{
+            storeFile file("app/tan.jks");
+        }*/
+
+        release{
+            storeFile file("tan.jks")
+            storePassword "kiki123456789"
+            keyAlias "ahaliulang"
+            keyPassword "kiki123456789"
+        }
+    }
+
     buildTypes {
         release {
+            //混淆
             minifyEnabled false
+            //优化
+            zipAlignEnabled true
+            //移除无用的resource文件
+           // shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //签名
+            signingConfig signingConfigs.release
         }
     }
 }

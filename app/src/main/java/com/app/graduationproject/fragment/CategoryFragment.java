@@ -41,8 +41,8 @@ public class CategoryFragment extends Fragment{
         View view = inflater.inflate(R.layout.category_fragment,container,false);
         list = new ArrayList<ImageCycleView.ImageInfo>();
         //添加图片资源用作轮播
-        list.add(new ImageCycleView.ImageInfo(R.drawable.test,"内科学|广州医科大学",""));
-        list.add(new ImageCycleView.ImageInfo(R.drawable.test2,"基能实验室|广州医科大学",""));
+        list.add(new ImageCycleView.ImageInfo(R.drawable.test,"周易精解|YuntuEdu",""));
+        list.add(new ImageCycleView.ImageInfo(R.drawable.test2,"精品视频公开课：远离呼吸系统疾病",""));
         list.add(new ImageCycleView.ImageInfo(R.drawable.test3,"精品视频公开课：医患关系及其伦理难题",""));
         mImageCycleView = (ImageCycleView) view.findViewById(R.id.scrollimage);
 
