@@ -18,7 +18,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.app.graduationproject.R;
 import com.app.graduationproject.activity.VideoDetailActivity;
@@ -273,7 +272,7 @@ public class BaseFragment extends Fragment{
             if(mIsRefreshing && BaseFragment.this.isVisible()){
                 updateData();
                 //Snackbar.make(mRefreshLayout,"已更新",Snackbar.LENGTH_SHORT).show();
-                Toast.makeText(getContext(),"已更新",Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getContext(),"已更新",Toast.LENGTH_SHORT).show();
                 mRecyclerView.smoothScrollToPosition(0);
             }
             setFetchingFlagsFalse();

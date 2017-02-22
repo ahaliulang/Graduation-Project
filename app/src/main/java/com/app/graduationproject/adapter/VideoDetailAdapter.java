@@ -94,7 +94,7 @@ public class VideoDetailAdapter extends RecyclerView.Adapter<VideoDetailAdapter.
         holder.time.setText(video.getTime());
         holder.title.setText(video.getName());
         if (isClicks.get(index) ) {
-            holder.item.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorDeepGreen));
+            holder.item.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorGray));
         } else {
             holder.item.setCardBackgroundColor(mContext.getResources().getColor(R.color.cardview_light_background));
         }

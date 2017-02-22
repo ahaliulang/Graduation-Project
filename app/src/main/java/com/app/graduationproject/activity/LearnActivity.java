@@ -17,13 +17,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.graduationproject.R;
 import com.app.graduationproject.db.Course;
 import com.app.graduationproject.fragment.BaseFragment;
 import com.app.graduationproject.services.DeleteLearnService;
 import com.app.graduationproject.services.LearnService;
+import com.app.graduationproject.utils.NetWorkUtils;
 import com.app.graduationproject.view.CourseItem;
 import com.app.graduationproject.view.ListViewCompat;
 import com.app.graduationproject.view.SlideView;
@@ -36,6 +39,7 @@ import java.util.List;
 import io.realm.Realm;
 
 import static com.app.graduationproject.R.id.courseCode;
+import static com.app.graduationproject.R.id.tv_error;
 
 
 /**
@@ -43,14 +47,14 @@ import static com.app.graduationproject.R.id.courseCode;
  */
 
 public class LearnActivity extends BaseActivity implements AdapterView.OnItemClickListener,
-        SlideView.OnSlideListener{
+        SlideView.OnSlideListener {
 
     private static final String TAG = "LearnActivity";
 
     private Toolbar mToolbar;
     private Realm mRealm;
-   // private Course course;
-  //  private List<Course> courseList;
+    // private Course course;
+    //  private List<Course> courseList;
 
     private List<CourseItem> mCourseItems;
 
@@ -67,6 +71,11 @@ public class LearnActivity extends BaseActivity implements AdapterView.OnItemCli
 
 
     private SharedPreferences mSharedPreferences; //存储登录的账号
+    private ProgressBar pb;
+    private TextView toAdd;
+    private LinearLayout linearLayout;
+    private ListViewCompat learnListview;
+    private TextView error;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -75,16 +84,18 @@ public class LearnActivity extends BaseActivity implements AdapterView.OnItemCli
         getWindow().setStatusBarColor(getResources().getColor(R.color.status_color));
         setContentView(R.layout.learn_list_layout);
 
+        pb = (ProgressBar) findViewById(R.id.progress_bar);
+        error = (TextView) findViewById(tv_error);
+
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
         codeReceiver = new CodeReceiver();
-        mLocalBroadcastManager.registerReceiver(codeReceiver,new IntentFilter(LearnService.ACTION_CODE));
-        mSharedPreferences = this.getSharedPreferences("account",MODE_PRIVATE);
-        accountId = mSharedPreferences.getString("accountId","");  //获取已登陆的存储的账号
+        mLocalBroadcastManager.registerReceiver(codeReceiver, new IntentFilter(LearnService.ACTION_CODE));
+        mSharedPreferences = this.getSharedPreferences("account", MODE_PRIVATE);
+        accountId = mSharedPreferences.getString("accountId", "");  //获取已登陆的存储的账号
         mRealm = Realm.getDefaultInstance();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("正在学习");
-
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,14 +104,39 @@ public class LearnActivity extends BaseActivity implements AdapterView.OnItemCli
             }
         });
     }
+
     @Override
     protected void onResume() {
-        Intent intent = new Intent(LearnActivity.this, LearnService.class);
-        intent.putExtra("code",accountId);
-        startService(intent);
         super.onResume();
+        if (!checkNetwork()) {
+            return;
+        }
+        Intent intent = new Intent(LearnActivity.this, LearnService.class);
+        intent.putExtra("code", accountId);
+        startService(intent);
 
     }
+
+    private boolean checkNetwork() {
+        if (!NetWorkUtils.isNetworkConnected(getApplicationContext())) {
+            pb.setVisibility(View.INVISIBLE);
+            //error.setVisibility(View.VISIBLE);
+            Toast.makeText(LearnActivity.this, "当前网络不可用，请检查你的网络设置", Toast.LENGTH_SHORT).show();
+            error.setText("加载失败，请点击重试");
+            error.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    error.setText("正在加载中...");
+                    pb.setVisibility(View.VISIBLE);
+                    Toast.makeText(LearnActivity.this, "当前网络不可用，请检查你的网络设置", Toast.LENGTH_SHORT).show();
+                    checkNetwork();
+                }
+            });
+            return false;
+        }
+        return true;
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -109,14 +145,13 @@ public class LearnActivity extends BaseActivity implements AdapterView.OnItemCli
     }
 
 
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         Log.e(TAG, "onItemClick position=" + position);
         TextView textView = (TextView) view.findViewById(courseCode);
         String courseCode = textView.getText().toString();
-        Intent intent = new Intent(LearnActivity.this,VideoDetailActivity.class);
-        intent.putExtra(BaseFragment.EXTRA_COURSE_CODE,courseCode);
+        Intent intent = new Intent(LearnActivity.this, VideoDetailActivity.class);
+        intent.putExtra(BaseFragment.EXTRA_COURSE_CODE, courseCode);
         startActivity(intent);
     }
 
@@ -134,24 +169,88 @@ public class LearnActivity extends BaseActivity implements AdapterView.OnItemCli
     /**
      * 广播接收来自LearnService发送过来的课程号集合
      */
-    private class CodeReceiver extends BroadcastReceiver{
+    private class CodeReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             ArrayList<CharSequence> codeList = intent.getCharSequenceArrayListExtra(LearnService.EXTRA_CODE);
-
             mCourseItems = new ArrayList<>();
+            learnListview = (ListViewCompat) findViewById(R.id.learn_list);
+            linearLayout = (LinearLayout) findViewById(R.id.showTips);
+            toAdd = (TextView) findViewById(R.id.toAdd);
+            if(codeList.size() == 1 && codeList.get(0).equals("666666")){
+                pb.setVisibility(View.GONE);
+                error.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.VISIBLE);
+                learnListview.setVisibility(View.GONE);
+                toAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent toAdd = new Intent(LearnActivity.this, AddCourse.class);
+                        startActivity(toAdd);
+                    }
+                });
+            }else if(codeList.size() > 0){
 
-            ListViewCompat learnListview = (ListViewCompat) findViewById(R.id.learn_list);
-            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.showTips);
-            TextView toAdd = (TextView) findViewById(R.id.toAdd);
+                for (int i = 0, size = codeList.size(); i < size; i++) {
+                    CourseItem courseItem = new CourseItem();
+                    courseItem.course = Course.fromCode(mRealm, codeList.get(i).toString());
+                    Log.e("LLO", "onReceive: " + codeList.get(i).toString());
+                    mCourseItems.add(courseItem);
+                }
+
+                adapter = new LearnSlideAdapter(LearnActivity.this, R.layout.learn_list_item, mCourseItems);
+                for (CourseItem courseItem1 : mCourseItems) {
+                    Course course = courseItem1.course;
+                    Log.e(TAG, "onReceive: " + course.getCode());
+                }
+                pb.setVisibility(View.GONE);
+                error.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.GONE);
+                learnListview.setVisibility(View.VISIBLE);
+                learnListview.setAdapter(adapter);
+                learnListview.setOnItemClickListener(LearnActivity.this);
+            }else {
+                Toast.makeText(context, "无法连接服务器，请检查你的网络连接", Toast.LENGTH_SHORT).show();
+                pb.setVisibility(View.INVISIBLE);
+                error.setText("加载失败，请点击重试");
+                error.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        error.setText("正在加载中...");
+                        pb.setVisibility(View.VISIBLE);
+                        Intent intent = new Intent(LearnActivity.this, LearnActivity.class);
+                        intent.putExtra("code",accountId);
+                        startService(intent);
+                    }
+                });
+            }
+            /*Toast.makeText(context, "无法连接服务器，请检查你的网络连接", Toast.LENGTH_SHORT).show();
+            error.setText("加载失败，请点击重试");
+            error.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    error.setVisibility(View.GONE);
+                    Intent intent = new Intent(LearnActivity.this, LearnService.class);
+                    intent.putExtra("code", accountId);
+                    startService(intent);
+                }
+            });*/
+
+
+            /*mCourseItems = new ArrayList<>();
+
+            learnListview = (ListViewCompat) findViewById(R.id.learn_list);
+            linearLayout = (LinearLayout) findViewById(R.id.showTips);
+            toAdd = (TextView) findViewById(R.id.toAdd);
 
             for(int i=0,size = codeList.size();i<size;i++){
                 CourseItem courseItem = new CourseItem();
                 courseItem.course = Course.fromCode(mRealm,codeList.get(i).toString());
                 Log.e("LLO", "onReceive: "+codeList.get(i).toString());
                 mCourseItems.add(courseItem);
-            }
+            }*/
+            /*pb.setVisibility(View.GONE);
             if(mCourseItems.size() <= 0){
                 linearLayout.setVisibility(View.VISIBLE);
                 learnListview.setVisibility(View.GONE);
@@ -163,8 +262,8 @@ public class LearnActivity extends BaseActivity implements AdapterView.OnItemCli
                     }
                 });
                 return;
-            }
-            adapter = new LearnSlideAdapter(LearnActivity.this, R.layout.learn_list_item,mCourseItems);
+            }*/
+            /*adapter = new LearnSlideAdapter(LearnActivity.this, R.layout.learn_list_item,mCourseItems);
             for(CourseItem courseItem1:mCourseItems){
                 Course course = courseItem1.course;
                 Log.e(TAG, "onReceive: "+course.getCode() );
@@ -172,12 +271,11 @@ public class LearnActivity extends BaseActivity implements AdapterView.OnItemCli
             linearLayout.setVisibility(View.GONE);
             learnListview.setVisibility(View.VISIBLE);
             learnListview.setAdapter(adapter);
-            learnListview.setOnItemClickListener(LearnActivity.this);
-
+            learnListview.setOnItemClickListener(LearnActivity.this);*/
         }
     }
 
-    private class LearnSlideAdapter extends android.widget.BaseAdapter{
+    private class LearnSlideAdapter extends android.widget.BaseAdapter {
 
         private int resId;
         private List<CourseItem> courseItems;
@@ -193,7 +291,7 @@ public class LearnActivity extends BaseActivity implements AdapterView.OnItemCli
 
         @Override
         public int getCount() {
-            return courseItems == null?0:courseItems.size();
+            return courseItems == null ? 0 : courseItems.size();
         }
 
         @Override
@@ -212,14 +310,14 @@ public class LearnActivity extends BaseActivity implements AdapterView.OnItemCli
 
             ViewHolder holder;
             SlideView slideView = (SlideView) convertView;
-            if(slideView == null){
+            if (slideView == null) {
                 View itemView = View.inflate(context, resId, null);
                 slideView = new SlideView(context);
                 slideView.setContentView(itemView);
                 slideView.setOnSlideListener(LearnActivity.this);
                 holder = new ViewHolder(slideView);
                 slideView.setTag(holder);
-            }else {
+            } else {
                 holder = (ViewHolder) slideView.getTag();
             }
             CourseItem item = courseItems.get(position);
@@ -234,7 +332,7 @@ public class LearnActivity extends BaseActivity implements AdapterView.OnItemCli
             holder.video_clip.setText(item.course.getStudy());
             holder.people.setText(item.course.getVisit());
             holder.courseCode.setText(item.course.getCode());
-            switch (item.course.getScore()){
+            switch (item.course.getScore()) {
                 case "5":
                     holder.score.setText("☆☆☆☆☆");
                     break;
@@ -264,19 +362,31 @@ public class LearnActivity extends BaseActivity implements AdapterView.OnItemCli
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(LearnActivity.this, DeleteLearnService.class);
-                    intent.putExtra("courseCode",courseItems.get(position).course.getCode());
-                    intent.putExtra("studentCode",accountId);
-                    Log.e(TAG, "onClick: "+ courseItems.get(position).course.getCode());
+                    intent.putExtra("courseCode", courseItems.get(position).course.getCode());
+                    intent.putExtra("studentCode", accountId);
+                    Log.e(TAG, "onClick: " + courseItems.get(position).course.getCode());
                     startService(intent);
                     courseItems.remove(position);
                     notifyDataSetChanged();
+                    if (courseItems.size() <= 0) {
+                        linearLayout.setVisibility(View.VISIBLE);
+                        learnListview.setVisibility(View.GONE);
+                        error.setVisibility(View.GONE);
+                        toAdd.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent toAdd = new Intent(LearnActivity.this, AddCourse.class);
+                                startActivity(toAdd);
+                            }
+                        });
+                    }
                 }
             });
             return slideView;
         }
     }
 
-    private static class ViewHolder{
+    private static class ViewHolder {
         ImageView thumbnail;
         TextView title;
         TextView courseCode;
@@ -285,7 +395,7 @@ public class LearnActivity extends BaseActivity implements AdapterView.OnItemCli
         TextView score;
         ViewGroup deleteHolder;
 
-        ViewHolder(View view){
+        ViewHolder(View view) {
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
             title = (TextView) view.findViewById(R.id.title);
             courseCode = (TextView) view.findViewById(R.id.courseCode);

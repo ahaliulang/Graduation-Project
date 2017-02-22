@@ -15,6 +15,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.codes;
+
 /**
  * Created by Administrator on 2016/12/23.
  */
@@ -47,16 +49,16 @@ public class LearnService extends IntentService{
     protected void onHandleIntent(Intent intent) {
 
         code = intent.getStringExtra("code");
-
+        ArrayList<CharSequence> codes = new ArrayList<>();
         try {
             List<Learn> body = CloudAPIService.getInstance().getLearn(code).execute().body();
 
-            ArrayList<CharSequence> codes = new ArrayList<>();
+
             for(Learn learn:body){
                 codes.add(learn.getClassCode());
             }
             Log.e("TTT",codes.size() + " -" + codes.toString());
-            sendCode(codes);
+
 
         } catch (SocketTimeoutException e) {
             mExceptionCode = Constants.NETWORK_EXCEPTION.TIMEOUT;
@@ -67,8 +69,7 @@ public class LearnService extends IntentService{
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
+        sendCode(codes);
     }
 
     private void sendCode(ArrayList<CharSequence> codeList){

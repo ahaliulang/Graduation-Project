@@ -10,9 +10,10 @@
         android:id="@+id/tv_camera"
         android:text="拍摄照片"
         android:gravity="center"
-        android:textSize="26sp"
+        android:textSize="20sp"
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        android:layout_height="50dp"
+        android:textColor="@android:color/black"/>
     <View
         android:layout_width="match_parent"
         android:background="@color/colorGray"
@@ -22,8 +23,9 @@
         android:layout_width="match_parent"
         android:text="本地相册"
         android:gravity="center"
-        android:textSize="26sp"
-        android:layout_height="50dp" />
+        android:textSize="20sp"
+        android:layout_height="50dp"
+        android:textColor="@android:color/black"/>
     <View
         android:layout_width="match_parent"
         android:background="@color/colorGray"
@@ -33,8 +35,7 @@
         android:layout_width="match_parent"
         android:text="取消"
         android:gravity="center"
-        android:textSize="22sp"
-        android:layout_height="50dp"
-        android:textColor="@color/colorRed"/>
+        android:textSize="18sp"
+        android:layout_height="50dp"/>
 
 </LinearLayout>

@@ -19,13 +19,16 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.graduationproject.R;
 import com.app.graduationproject.db.Course;
 import com.app.graduationproject.fragment.BaseFragment;
 import com.app.graduationproject.services.DeleteFocusService;
 import com.app.graduationproject.services.FocusService;
+import com.app.graduationproject.utils.NetWorkUtils;
 import com.app.graduationproject.view.CourseItem;
 import com.app.graduationproject.view.ListViewCompat;
 import com.app.graduationproject.view.SlideView;
@@ -62,6 +65,12 @@ public class FocusActivity extends BaseActivity implements
     private FocusSlideAdapter adapter;
 
     private SharedPreferences mSharedPreferences; //存储登录的账号
+    private ProgressBar pb;
+    private LinearLayout linearLayout;
+    private TextView toAdd;
+    private ListViewCompat focusListview;
+    private TextView learn_or_focus;
+    private TextView tv_error;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -69,6 +78,13 @@ public class FocusActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         getWindow().setStatusBarColor(getResources().getColor(R.color.status_color));
         setContentView(R.layout.learn_list_layout);
+
+        pb = (ProgressBar) findViewById(R.id.progress_bar);
+        linearLayout = (LinearLayout) findViewById(R.id.showTips);
+        toAdd = (TextView) findViewById(R.id.toAdd);
+        focusListview = (ListViewCompat) findViewById(R.id.learn_list);
+        learn_or_focus = (TextView) findViewById(R.id.tv_learn_or_focus);
+        tv_error = (TextView) findViewById(R.id.tv_error);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("关注的课程");
@@ -102,11 +118,34 @@ public class FocusActivity extends BaseActivity implements
 
     @Override
     protected void onResume() {
+        super.onResume();
+        if (!checkNetwork()) {
+            return;
+        }
         Intent intent = new Intent(FocusActivity.this, FocusService.class);
         intent.putExtra("code",accountId);
         startService(intent);
-        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
 
+    private boolean checkNetwork() {
+        if (!NetWorkUtils.isNetworkConnected(getApplicationContext())) {
+            pb.setVisibility(View.INVISIBLE);
+            //error.setVisibility(View.VISIBLE);
+            Toast.makeText(FocusActivity.this, "当前网络不可用，请检查你的网络设置", Toast.LENGTH_SHORT).show();
+            tv_error.setText("加载失败，请点击重试");
+            tv_error.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tv_error.setText("正在加载中...");
+                    pb.setVisibility(View.VISIBLE);
+                    Toast.makeText(FocusActivity.this, "当前网络不可用，请检查你的网络设置", Toast.LENGTH_SHORT).show();
+                    checkNetwork();
+                }
+            });
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -163,25 +202,78 @@ public class FocusActivity extends BaseActivity implements
         @Override
         public void onReceive(Context context, Intent intent) {
             ArrayList<CharSequence> codeList = intent.getCharSequenceArrayListExtra(FocusService.EXTRA_CODE);
-            //courseList = new ArrayList<Course>();
-            mCourseItems = new ArrayList<>();
+            Log.d(TAG, "onReceive: " + "test");
 
+            if(codeList.size() == 1 && codeList.get(0).equals("666666")){
+                Log.d(TAG, "onReceive: " + codeList.size() + " -- " + codeList.get(0));
+                pb.setVisibility(View.GONE);
+                tv_error.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.VISIBLE);
+                focusListview.setVisibility(View.GONE);
+                learn_or_focus.setText("HI,您没有关注的课程");
+                toAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent toAdd = new Intent(FocusActivity.this,AddCourse.class);
+                        startActivity(toAdd);
+                    }
+                });
+                return;
+            }else if(codeList.size() > 0){
+                Log.d(TAG, "onReceive: " + codeList.size() + " -- " + codeList.get(0));
+                pb.setVisibility(View.GONE);
+                tv_error.setVisibility(View.GONE);
+                mCourseItems = new ArrayList<>();
 
-            ListViewCompat focusListview = (ListViewCompat) findViewById(R.id.learn_list);
-            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.showTips);
-            TextView toAdd = (TextView) findViewById(R.id.toAdd);
+                for(int i=0,size = codeList.size();i<size;i++){
+                    CourseItem courseItem = new CourseItem();
+                    courseItem.course = Course.fromCode(mRealm,codeList.get(i).toString());
+                    Log.e("LLO", "onReceive: "+codeList.get(i).toString());
+                    mCourseItems.add(courseItem);
+                }
+
+                adapter = new FocusSlideAdapter(FocusActivity.this, R.layout.learn_list_item,mCourseItems);
+                for(CourseItem courseItem1:mCourseItems){
+                    Course course = courseItem1.course;
+                    Log.e(TAG, "onReceive: "+course.getCode() );
+                }
+                linearLayout.setVisibility(View.GONE);
+                focusListview.setVisibility(View.VISIBLE);
+                focusListview.setAdapter(adapter);
+                focusListview.setOnItemClickListener(FocusActivity.this);
+            }else {
+                Log.d(TAG, "onReceive: " + "else");
+                Toast.makeText(context, "无法连接服务器，请检查你的网络连接", Toast.LENGTH_SHORT).show();
+                pb.setVisibility(View.INVISIBLE);
+                tv_error.setText("加载失败，请点击重试");
+                tv_error.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        tv_error.setText("正在加载中...");
+                        pb.setVisibility(View.VISIBLE);
+                        Intent intent = new Intent(FocusActivity.this, FocusService.class);
+                        intent.putExtra("code",accountId);
+                        startService(intent);
+                    }
+                });
+
+            }
+
+            /*mCourseItems = new ArrayList<>();
+
 
             for(int i=0,size = codeList.size();i<size;i++){
                 CourseItem courseItem = new CourseItem();
                 courseItem.course = Course.fromCode(mRealm,codeList.get(i).toString());
                 Log.e("LLO", "onReceive: "+codeList.get(i).toString());
-                // courseItem.course = course;
-                // courseList.add(course);
                 mCourseItems.add(courseItem);
             }
+            pb.setVisibility(View.GONE);
+            tv_error.setVisibility(View.GONE);
             if(mCourseItems.size() <= 0){
                 linearLayout.setVisibility(View.VISIBLE);
                 focusListview.setVisibility(View.GONE);
+                learn_or_focus.setText("HI,您没有关注的课程");
                 toAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -191,7 +283,6 @@ public class FocusActivity extends BaseActivity implements
                 });
                 return;
             }
-
             adapter = new FocusSlideAdapter(FocusActivity.this, R.layout.learn_list_item,mCourseItems);
             for(CourseItem courseItem1:mCourseItems){
                 Course course = courseItem1.course;
@@ -200,7 +291,7 @@ public class FocusActivity extends BaseActivity implements
             linearLayout.setVisibility(View.GONE);
             focusListview.setVisibility(View.VISIBLE);
             focusListview.setAdapter(adapter);
-            focusListview.setOnItemClickListener(FocusActivity.this);
+            focusListview.setOnItemClickListener(FocusActivity.this);*/
         }
     }
 
@@ -294,6 +385,17 @@ public class FocusActivity extends BaseActivity implements
                     startService(intent);
                     courseItems.remove(position);
                     notifyDataSetChanged();
+                    if(courseItems.size()<=0){
+                        linearLayout.setVisibility(View.VISIBLE);
+                        focusListview.setVisibility(View.GONE);
+                        toAdd.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent toAdd = new Intent(FocusActivity.this,AddCourse.class);
+                                startActivity(toAdd);
+                            }
+                        });
+                    }
                 }
             });
             return slideView;

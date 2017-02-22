@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ public class DetailSecondFragment extends Fragment{
     public static final String ACTION_SECOND_VIDEO = "com.app.graduationproject.fragment.second_fragment";
     public static final String EXTRA_SECOND = "video_second";
 
-
+    private static final String TAG = "DetailSecondFragment";
 
     private ImageView back;
     private ListView listAll;
@@ -47,14 +48,66 @@ public class DetailSecondFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ");
         mRealm = Realm.getDefaultInstance();
         courseCode = getActivity().getIntent().getStringExtra(BaseFragment.EXTRA_COURSE_CODE);
         mSharedPreferences = getActivity().getSharedPreferences(courseCode, Context.MODE_PRIVATE);
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d(TAG, "onAttach: ");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d(TAG, "onDetach: ");
+    }
+
+    @Override
+    public void onDestroyOptionsMenu() {
+        super.onDestroyOptionsMenu();
+        Log.d(TAG, "onDestroyOptionsMenu: ");
+    }
+    
+    
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: " + "S");
         View view = inflater.inflate(R.layout.video_detail_second_fragment,container,false);
         initView(view);
         initData();
@@ -81,7 +134,7 @@ public class DetailSecondFragment extends Fragment{
                 for(int i=0;i<adapterView.getCount();i++){
                     View v=adapterView.getChildAt(i);
                     if (position == i) {
-                        v.setBackgroundColor(getResources().getColor(R.color.colorDeepGreen));
+                        v.setBackgroundColor(getResources().getColor(R.color.colorGray));
                     } else {
                         v.setBackgroundColor(Color.TRANSPARENT);
                     }
@@ -118,6 +171,7 @@ public class DetailSecondFragment extends Fragment{
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         setListViewHeightBaseOnChildren(listAll);
         super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated: ");
     }
 
     private void initView(View view) {

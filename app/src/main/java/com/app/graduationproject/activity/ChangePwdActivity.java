@@ -11,16 +11,19 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.graduationproject.R;
 import com.app.graduationproject.services.ChangePwdService;
+import com.app.graduationproject.utils.InputMethodUtils;
 
 /**
  * Created by TAN on 2016/12/11.
@@ -34,7 +37,7 @@ public class ChangePwdActivity extends BaseActivity {
     private EditText old_pwd;
     private EditText new_pwd;
     private EditText confirm;
-    private Button change;
+    //private Button change;
 
     private String old_pwd_text;
     private String new_pwd_text;
@@ -45,6 +48,9 @@ public class ChangePwdActivity extends BaseActivity {
 
     private LocalBroadcastManager mLocalBroadcastManager;
     private ChangeStatusReceiver changeStatusReceiver;
+
+    private ProgressBar update_pb;
+    private TextView update_tv;
 
     private SharedPreferences mSharedPreferences; //获取已登录的存储账号
 
@@ -76,10 +82,13 @@ public class ChangePwdActivity extends BaseActivity {
 
         account = mSharedPreferences.getString("accountId","");
 
+        update_pb = (ProgressBar) findViewById(R.id.pb_update);
+        update_tv = (TextView) findViewById(R.id.tv_update);
+
         Log.e("account",account);
 
         initView();
-        change.setOnClickListener(new View.OnClickListener() {
+       /* change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(old_pwd.getText().length() < 6 ){
@@ -98,7 +107,43 @@ public class ChangePwdActivity extends BaseActivity {
                     startService(intent);
                 }
             }
-        });
+        });*/
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.save,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.save){
+            InputMethodUtils.closeKeyboard(ChangePwdActivity.this);
+            if(old_pwd.getText().length() < 6 ){
+                //Toast.makeText(ChangePwdActivity.this,"原密码不能小于6位",Toast.LENGTH_SHORT).show();
+                old_pwd.setError("密码不能小于6位");
+            }else if(new_pwd.getText().length() <6){
+                //Toast.makeText(ChangePwdActivity.this,"密码不能小于6位",Toast.LENGTH_SHORT).show();
+                new_pwd.setError("新密码不能小于6位");
+            } else if(!new_pwd_text.equals(confirm_text)){
+                //Toast.makeText(ChangePwdActivity.this,"两次密码不一致，请重新输入！",Toast.LENGTH_SHORT).show();
+                confirm.setError("两次输入的密码不一致");
+            }else {
+                update_pb.setVisibility(View.VISIBLE);
+                update_tv.setVisibility(View.VISIBLE);
+                InputMethodUtils.closeKeyboard(ChangePwdActivity.this);
+                Intent intent = new Intent(ChangePwdActivity.this, ChangePwdService.class);
+                intent.putExtra(EXTRA_USER,account);
+                intent.putExtra(EXTRA_OLD_PASSWORD,old_pwd_text);
+                intent.putExtra(EXTRA_NEW_PASSWORD,new_pwd_text);
+                Log.e("TAG",account+" " + old_pwd_text + " " + new_pwd_text);
+
+                startService(intent);
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -115,7 +160,7 @@ public class ChangePwdActivity extends BaseActivity {
         new_pwd.addTextChangedListener(new_pwd_textwatch);
         confirm = (EditText) findViewById(R.id.confirm_pwd);
         confirm.addTextChangedListener(confirm_textwatch);
-        change = (Button) findViewById(R.id.change);
+        //change = (Button) findViewById(change);
     }
 
     private TextWatcher old_pwd_textwatch = new TextWatcher() {
@@ -132,7 +177,7 @@ public class ChangePwdActivity extends BaseActivity {
         @Override
         public void afterTextChanged(Editable editable) {
             old_pwd_text = old_pwd.getText().toString();
-            changeState();
+            //changeState();
         }
     };
 
@@ -150,7 +195,7 @@ public class ChangePwdActivity extends BaseActivity {
         @Override
         public void afterTextChanged(Editable editable) {
             new_pwd_text = new_pwd.getText().toString();
-            changeState();
+            //changeState();
         }
     };
 
@@ -168,19 +213,19 @@ public class ChangePwdActivity extends BaseActivity {
         @Override
         public void afterTextChanged(Editable editable) {
             confirm_text = confirm.getText().toString();
-            changeState();
+            //changeState();
         }
     };
 
-    private void changeState() {
+   /* private void changeState() {
         if (!(TextUtils.isEmpty(old_pwd_text)) && !(TextUtils.isEmpty(new_pwd_text)) && !TextUtils.isEmpty(confirm_text)) {
             change.setEnabled(true);
-            change.setBackgroundColor(getResources().getColor(R.color.colorDeepGreen));
+            change.setBackgroundColor(getResources().getColor(R.color.colorButton));
         } else {
             change.setEnabled(false);
             change.setBackgroundColor(getResources().getColor(R.color.colorGray));
         }
-    }
+    }*/
 
     private class ChangeStatusReceiver extends BroadcastReceiver{
 
@@ -188,10 +233,15 @@ public class ChangePwdActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             final int status = intent.getIntExtra(ChangePwdService.EXTRA_STATUS,0);
             if(status == 1){
-                Toast.makeText(context,"修改密码成功",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"修改密码成功",Toast.LENGTH_SHORT).show();
                 finish();
+            }else if(status == 0){
+                //Toast.makeText(context,"原密码不正确，请重新输入",Toast.LENGTH_SHORT).show();
+                old_pwd.setError("原密码不正确");
             }else {
-                Toast.makeText(context,"原密码不正确，请重新输入",Toast.LENGTH_SHORT).show();
+                update_pb.setVisibility(View.GONE);
+                update_tv.setVisibility(View.GONE);
+                Toast.makeText(context, "无法连接服务器，请检查你的网络连接", Toast.LENGTH_SHORT).show();
             }
         }
     }

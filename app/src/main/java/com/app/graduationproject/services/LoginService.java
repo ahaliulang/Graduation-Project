@@ -3,6 +3,7 @@ package com.app.graduationproject.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.app.graduationproject.activity.LoginActivity;
 import com.app.graduationproject.net.CloudAPIService;
@@ -46,6 +47,7 @@ public class LoginService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         code = intent.getStringExtra(LoginActivity.EXTRA_USER);
         password = intent.getStringExtra(LoginActivity.EXTRA_PASSWROD);
+        Log.d(TAG, "onHandleIntent: " + code + "--" + password);
         String name="";
         try {
             Response<String> execute = CloudAPIService.getInstance().login(code, password).execute();

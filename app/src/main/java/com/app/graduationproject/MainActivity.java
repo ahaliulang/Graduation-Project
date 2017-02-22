@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean mIsSearching;//搜索框是否出现，true为出现，false为隐藏
     private HomeFragment mHomeFragment;
     private BaseFragment mBaseFragment;
-    private CategoryFragment mCategoryFragment;
     private MyFragment mMyFragment;
+    private CategoryFragment mCategoryFragment;
     private FragmentManager fragmentManager;//碎片管理器
     private FragmentTransaction transaction;
 
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String PHOTO_FILE_NAME = "avatar.jpg";
     private SharedPreferences mSharedPreferences;
-    private File carmeraFile;
+
 
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -304,16 +304,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(mMyFragment.avatar);*/
                 }
-            } else if (requestCode == PHOTO_REQUEST_CAMERA) {
+            } else if (requestCode == PHOTO_REQUEST_CAMERA && resultCode == RESULT_OK) {
                 //从相机返回的数据
                 Log.e("1223", "onActivityResult: 2" );
-                carmeraFile = new File(Environment.getExternalStorageDirectory()+"/dongdong", "temp.jpg");
+                Log.d("MYURI", "onActivityResult: ");
+                File carmeraFile = new File(Environment.getExternalStorageDirectory()+"/dongdong","temp.jpg");
                 if(carmeraFile.exists()){
                     Log.e("1223", "onActivityResult: 3" );
                     crop(Uri.fromFile(carmeraFile));
+                    Log.d("MYURI", "onActivityResult: " + Uri.fromFile(carmeraFile).toString());
                 }
 
-            } else if (requestCode == PHOTO_REQUEST_CUT) {
+            } else if (requestCode == PHOTO_REQUEST_CUT && resultCode == RESULT_OK) {
                 if (data != null) {
                     Log.e("dongdong","9");
                     Bitmap bitmap = data.getParcelableExtra("data");
@@ -337,13 +339,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         e.printStackTrace();
                     }
                 }
-                try {
-                    carmeraFile.delete();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
             }
         }
     }

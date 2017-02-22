@@ -57,7 +57,7 @@ public class UpdateProfileService extends IntentService{
 
         Log.e(TAG,code+name+gender+phone+mail+institute+profession+introduce);
 
-        int status = 0;
+        int status = -1;
 
         try {
             Response<UpdateProfileStatus> execute = CloudAPIService.getInstance().updateProfile(code, name, gender, phone, mail, institute, profession, introduce).execute();

@@ -13,15 +13,17 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.app.graduationproject.R;
 import com.app.graduationproject.services.LoginService;
-
-import io.vov.vitamio.utils.Log;
+import com.app.graduationproject.utils.InputMethodUtils;
+import com.app.graduationproject.utils.NetWorkUtils;
 
 /**
  * Created by TAN on 2016/11/20.
@@ -30,6 +32,8 @@ public class LoginActivity extends BaseActivity {
 
     public static final String EXTRA_USER = "user";
     public static final String EXTRA_PASSWROD = "password";
+
+    private static final String TAG = "LoginActivity";
 
     private Button login;
     private String code; //账号
@@ -42,6 +46,7 @@ public class LoginActivity extends BaseActivity {
     private Toolbar mToolbar;
 
     private SharedPreferences mSharedPreferences; //存储登录的账号
+    private ProgressBar pb;
 
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -62,6 +67,8 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
+        pb = (ProgressBar) findViewById(R.id.progress_bar);
+
         mSharedPreferences = this.getSharedPreferences("account",MODE_PRIVATE);
         loginStatusReceiver = new LoginStatusReceiver();
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
@@ -70,9 +77,18 @@ public class LoginActivity extends BaseActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                InputMethodUtils.closeKeyboard(LoginActivity.this);
+                pb.setVisibility(View.VISIBLE);
                 Intent intent = new Intent(LoginActivity.this, LoginService.class);
                 intent.putExtra(EXTRA_USER, code);
                 intent.putExtra(EXTRA_PASSWROD, pwd);
+                login.setText("登陆中...");
+                if(!NetWorkUtils.isNetworkConnected(getApplicationContext())){
+                    Toast.makeText(LoginActivity.this,"当前网络不可用，请检查你的网络设置",Toast.LENGTH_SHORT).show();
+                    pb.setVisibility(View.GONE);
+                    login.setText("登陆");
+                    return;
+                }
                 startService(intent);
             }
         });
@@ -92,9 +108,32 @@ public class LoginActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String name = intent.getStringExtra(LoginService.EXTRA_STATUS);
-            Log.e("name");
-            if (!TextUtils.isEmpty(name)) {
-                Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onReceive: "+name + " " + intent);
+            if(name.equals("false")){
+                Toast.makeText(context, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+                login.setText("登陆");
+                login.setBackgroundColor(getResources().getColor(R.color.colorGray));
+                password.setText("");
+                pb.setVisibility(View.GONE);
+            }else if(!TextUtils.isEmpty(name)){
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.clear();
+                editor.putString("accountId",code); //保存账号
+                editor.putString("name",name); //保存昵称
+                editor.commit();
+                //LoginActivity.this.setResult(RESULT_OK);
+                Intent intentName = new Intent();
+                intentName.putExtra("name",name);
+                LoginActivity.this.setResult(RESULT_OK,intentName);
+                pb.setVisibility(View.GONE);
+                finish();
+            }else {
+                Toast.makeText(context, "无法连接服务器，请检查你的网络连接", Toast.LENGTH_SHORT).show();
+                pb.setVisibility(View.GONE);
+                login.setText("登陆");
+            }
+            /*if (!TextUtils.isEmpty(name)) {
+               // Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
 
                 //将登录账号存储起来
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -108,8 +147,15 @@ public class LoginActivity extends BaseActivity {
                 LoginActivity.this.setResult(RESULT_OK,intentName);
                 finish();
             } else {
-                Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+                login.setText("登陆");
+                login.setBackgroundColor(getResources().getColor(R.color.colorGray));
+                password.setText("");
+                flag = true;
+
             }
+            Toast.makeText(context, "网络错误", Toast.LENGTH_SHORT).show();*/
+
         }
     }
 
@@ -147,7 +193,7 @@ public class LoginActivity extends BaseActivity {
     private void loginState() {
         if (!(TextUtils.isEmpty(code)) && !(TextUtils.isEmpty(pwd))) {
             login.setEnabled(true);
-            login.setBackgroundColor(getResources().getColor(R.color.colorDeepGreen));
+            login.setBackgroundColor(getResources().getColor(R.color.colorButton));
         } else {
             login.setEnabled(false);
             login.setBackgroundColor(getResources().getColor(R.color.colorGray));

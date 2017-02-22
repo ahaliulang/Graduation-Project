@@ -46,24 +46,26 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener{
     protected void onCreateHeader(ImageView icon, TextView slogan,TextView version){
         setHeaderContentColor(Color.parseColor("#FFFFFF"));
         setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        icon.setImageResource(R.mipmap.ic_launcher);
-        slogan.setText("A third-party Android client of DiyCode.");
+        icon.setImageResource(R.drawable.gzhmu);
+        slogan.setText("广州医科大学云课堂Android移动端");
         version.setText("version " + "1.0.1");
     }
 
     protected void onItemsCreated(@NonNull Items items){
         items.add(new Introduce("介绍"));
-        items.add(new Card("jdsoiafdsajofjdsofod","ahaliulang"));
+        items.add(new Card("广州医科大学利用现代信息与网络技术，以普及共享优质课程资源为目的，构建了体现现代教育思想和教育教学规律、展示教师先进教学理念和方法、服务学习者自主学习的网络学习平台。","广州医科大学"));
 
         items.add(new Line());
 
         items.add(new Introduce("Developers"));
-        items.add(new Contributor(R.mipmap.ic_launcher,"ahaliulng","Android Developer",
-                "https://www.baidu.com/"));
+        items.add(new Contributor(R.drawable.ahaliulang,"ahaliulng","Android Developer",
+                "https://github.com/ahaliulang"));
 
         items.add(new Line());
 
         items.add(new Introduce("Open Source Licenses"));
+        items.add(new License("Vitamio", "yixia", License.APACHE_2,
+                "https://github.com/yixia/VitamioBundle"));
         items.add(new License("MultiType", "drakeet", License.APACHE_2,
                 "https://github.com/drakeet/MultiType"));
         items.add(new License("about-page", "drakeet", License.APACHE_2,
@@ -75,10 +77,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener{
                 new License("glide", "bumptech", License.APACHE_2, "https://github.com/bumptech/glide"));
         items.add(
                 new License("retrofit", "square", License.APACHE_2, "https://github.com/square/retrofit"));
-        items.add(new License("eventbus", "greenrobot", License.APACHE_2,
-                "https://github.com/greenrobot/EventBus"));
-        items.add(new License("SystemBarTint", "jgilfelt", License.APACHE_2,
-                "https://github.com/jgilfelt/SystemBarTint"));
+
     }
 
     @Nullable

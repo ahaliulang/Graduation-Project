@@ -48,12 +48,10 @@ public class GetProfileService extends IntentService{
     @Override
     protected void onHandleIntent(Intent intent) {
         code = intent.getStringExtra(UpdateProfileActivity.EXTRA_CODE);
-        Student student;
+        Student student = null;
         try {
             Response<Student> execute = CloudAPIService.getInstance().getProfile(code).execute();
             student = execute.body();
-          //  Log.e("oooh",student.toString());
-            sendStudent(student);
         } catch (SocketTimeoutException e) {
             mExceptionCode = Constants.NETWORK_EXCEPTION.TIMEOUT;
         } catch (UnknownHostException e) {
@@ -63,6 +61,7 @@ public class GetProfileService extends IntentService{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        sendStudent(student);
 
     }
     private void sendStudent(Student student) {

@@ -35,8 +35,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="15dp"
-        android:drawableLeft="@drawable/ic_face_black_24dp"
+        android:drawableLeft="@drawable/ic_perm_identity_black_24dp"
         />
 
     <EditText
@@ -55,12 +56,20 @@
         android:layout_marginTop="18dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:textSize="25sp"
+        android:textSize="18sp"
         android:layout_width="match_parent"
         android:text="登录"
         android:background="@color/colorGray"
         android:textColor="@color/colorWhite"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:enabled="false" />
+    <ProgressBar
+        android:layout_marginTop="5dp"
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:indeterminateDuration="1200"
+        android:visibility="gone"/>
 
 </LinearLayout>

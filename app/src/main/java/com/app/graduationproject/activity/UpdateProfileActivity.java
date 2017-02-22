@@ -12,17 +12,23 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.graduationproject.R;
 import com.app.graduationproject.entity.Student;
 import com.app.graduationproject.services.GetProfileService;
 import com.app.graduationproject.services.UpdateProfileService;
+import com.app.graduationproject.utils.InputMethodUtils;
+import com.app.graduationproject.utils.NetWorkUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +39,7 @@ import java.util.regex.Pattern;
 
 public class UpdateProfileActivity extends BaseActivity {
 
-
+    private static final String TAG = "UpdateProfileActivity";
 
     public static final String EXTRA_CODE = "account";
     public static final String EXTRA_NAME = "name";
@@ -52,7 +58,7 @@ public class UpdateProfileActivity extends BaseActivity {
     private EditText et_profession;
     private EditText et_introduce;
 
-    private Button btn_update;
+   // private Button btn_update;
 
     private RadioGroup rg_gender;
     private RadioButton rb_male;
@@ -65,11 +71,16 @@ public class UpdateProfileActivity extends BaseActivity {
 
     private Student student;
 
+    private ProgressBar pb;
+    private TextView tv_error;
+
 
     private LocalBroadcastManager mLocalBroadcastManager;
     private UpdateProfileReceiver updateProfileReceiver;
 
     private SharedPreferences mSharedPreferences; //获取已登录的存储账号
+    private ProgressBar update_pb;
+    private TextView update_tv;
 
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -80,7 +91,7 @@ public class UpdateProfileActivity extends BaseActivity {
         setContentView(R.layout.activity_profile);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle("修改资料");
+        mToolbar.setTitle("个人资料");
 
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -89,6 +100,12 @@ public class UpdateProfileActivity extends BaseActivity {
                 finish();
             }
         });
+
+        pb = (ProgressBar) findViewById(R.id.progress_bar);
+        tv_error = (TextView) findViewById(R.id.tv_error);
+
+        update_pb = (ProgressBar) findViewById(R.id.pb_update);
+        update_tv = (TextView) findViewById(R.id.tv_update);
 
         mSharedPreferences = this.getSharedPreferences("account",MODE_PRIVATE);
         updateProfileReceiver = new UpdateProfileReceiver();
@@ -102,13 +119,16 @@ public class UpdateProfileActivity extends BaseActivity {
         code = mSharedPreferences.getString("accountId","");  //获取已登陆的存储的账号
         gender = rb_male.getText().toString().trim();
         initListener();
+        if(!checkNetwork()){
+            return;
+        }
         getProfileOnEditText();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //Log.e("student",student.toString());
+       /* //Log.e("student",student.toString());
         if(student != null){
             et_name.setText(student.getName());
             et_phone.setText(student.getPhone());
@@ -116,7 +136,7 @@ public class UpdateProfileActivity extends BaseActivity {
             et_institute.setText(student.getInstitute());
             et_profession.setText(student.getProfession());
             et_introduce.setText(student.getIntroduce());
-        }
+        }*/
 
         Log.e("onResume", "onResume: "+"uuu");
     }
@@ -134,6 +154,27 @@ public class UpdateProfileActivity extends BaseActivity {
         startService(intent);
     }
 
+
+    private boolean checkNetwork() {
+        if (!NetWorkUtils.isNetworkConnected(getApplicationContext())) {
+            pb.setVisibility(View.INVISIBLE);
+            //error.setVisibility(View.VISIBLE);
+            Toast.makeText(UpdateProfileActivity.this, "当前网络不可用，请检查你的网络设置", Toast.LENGTH_SHORT).show();
+            tv_error.setText("获取资料失败，请点击重试");
+            tv_error.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tv_error.setText("获取资料中...");
+                    pb.setVisibility(View.VISIBLE);
+                    Toast.makeText(UpdateProfileActivity.this, "当前网络不可用，请检查你的网络设置", Toast.LENGTH_SHORT).show();
+                    checkNetwork();
+                }
+            });
+            return false;
+        }
+        return true;
+    }
+
     private void initView() {
         et_name = (EditText) findViewById(R.id.et_name);
         et_phone = (EditText) findViewById(R.id.et_phone);
@@ -142,7 +183,7 @@ public class UpdateProfileActivity extends BaseActivity {
         et_profession = (EditText) findViewById(R.id.et_profession);
         et_introduce = (EditText) findViewById(R.id.et_introduce);
 
-        btn_update = (Button) findViewById(R.id.update);
+        //btn_update = (Button) findViewById(R.id.update);
 
         rg_gender = (RadioGroup) findViewById(R.id.rg_gender);
 
@@ -152,8 +193,37 @@ public class UpdateProfileActivity extends BaseActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.save,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.save){
+            if(validateText()){ //格式输入正确
+                update_pb.setVisibility(View.VISIBLE);
+                update_tv.setVisibility(View.VISIBLE);
+                InputMethodUtils.closeKeyboard(UpdateProfileActivity.this);
+                Intent intent = new Intent(UpdateProfileActivity.this, UpdateProfileService.class);
+                intent.putExtra(EXTRA_CODE,code);
+                intent.putExtra(EXTRA_NAME,name);
+                intent.putExtra(EXTRA_GENDER,gender);
+                intent.putExtra(EXTRA_PHONE,phone);
+                intent.putExtra(EXTRA_MAIL,mail);
+                intent.putExtra(EXTRA_INSTITUTE,institute);
+                intent.putExtra(EXTRA_PROFESSION,profession);
+                intent.putExtra(EXTRA_INTRODUCE,introduce);
+                //name = et_name.getText().toString().trim();
+                startService(intent);
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initListener() {
-        btn_update.setOnClickListener(new View.OnClickListener() {
+        /*btn_update.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -171,7 +241,7 @@ public class UpdateProfileActivity extends BaseActivity {
                     startService(intent);
                 }
             }
-        });
+        });*/
 
         rg_gender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -219,6 +289,11 @@ public class UpdateProfileActivity extends BaseActivity {
         }else if(!checkEmail(mail)){
             et_mail.setError("邮箱格式不正确");
             return false;
+        }
+        Log.d(TAG, "validateText: " + introduce.length());
+        if(introduce.length()>80){
+
+            et_introduce.setError("不能超过80个字符");
         }
         return true;
     }
@@ -268,7 +343,7 @@ public class UpdateProfileActivity extends BaseActivity {
             if(intent.getAction().equals(UpdateProfileService.ACTION_STATUS)){
                 final int status = intent.getIntExtra(UpdateProfileService.EXTRA_STATUS,0);
                 if(status == 1){
-                    Toast.makeText(context,"修改成功！",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"修改成功！",Toast.LENGTH_SHORT).show();
                     SharedPreferences  .Editor editor = mSharedPreferences.edit();
                     editor.putString("name",name); //保存昵称
                     editor.commit();
@@ -277,18 +352,31 @@ public class UpdateProfileActivity extends BaseActivity {
                     intentName.putExtra("name",name);
                     UpdateProfileActivity.this.setResult(RESULT_OK,intentName);
                     finish();
-                }else {
+                }else if(status == 0){
                     Toast.makeText(context,"修改失败！",Toast.LENGTH_SHORT).show();
+                }else{
+                    update_pb.setVisibility(View.GONE);
+                    update_tv.setVisibility(View.GONE);
+                    Toast.makeText(context, "无法连接服务器，请检查你的网络连接", Toast.LENGTH_SHORT).show();
                 }
             }else if(intent.getAction().equals(GetProfileService.ACTION_STUDENT)){
                 Student student = intent.getParcelableExtra(GetProfileService.KEY);
-                Log.e("receiver", "onReceive: "+"resds" );
-                et_name.setText(student.getName());
-                et_phone.setText(student.getPhone());
-                et_mail.setText(student.getMail());
-                et_institute.setText(student.getInstitute());
-                et_profession.setText(student.getProfession());
-                et_introduce.setText(student.getIntroduce());
+                if(student == null){
+                    pb.setVisibility(View.INVISIBLE);
+                    tv_error.setText("获取资料失败，请点击重试");
+                    tv_error.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            tv_error.setText("获取资料中...");
+                            pb.setVisibility(View.VISIBLE);
+                            Intent intent = new Intent(UpdateProfileActivity.this, GetProfileService.class);
+                            intent.putExtra(EXTRA_CODE,code);
+                            startService(intent);
+                        }
+                    });
+                    return;
+                }
+                LinearLayout layout = (LinearLayout) findViewById(R.id.layout_content);
                 if(rb_male.getText().equals(student.getGender())){
                     rg_gender.check(rb_male.getId());
                 }else if(rb_female.getText().equals(student.getGender())){
@@ -296,8 +384,16 @@ public class UpdateProfileActivity extends BaseActivity {
                 }else {
                     rg_gender.check(rb_secret.getId());
                 }
+                et_name.setText(student.getName());
+                et_phone.setText(student.getPhone());
+                et_mail.setText(student.getMail());
+                et_institute.setText(student.getInstitute());
+                et_profession.setText(student.getProfession());
+                et_introduce.setText(student.getIntroduce());
+                pb.setVisibility(View.GONE);
+                tv_error.setVisibility(View.GONE);
+                layout.setVisibility(View.VISIBLE);
             }
-
         }
     }
 }

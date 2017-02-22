@@ -77,7 +77,9 @@ public class BottomDialog extends Dialog{
                     Log.e("dongdong","5");
                     //从文件中创建uri
                     Uri uri = Uri.fromFile(file);
+                    Log.d("MYURI", uri.toString());
                     intent.putExtra(MediaStore.EXTRA_OUTPUT,uri);
+
                     Log.e("dongdong","6");
                 } catch (Exception e) {
                     e.printStackTrace();

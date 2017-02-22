@@ -45,17 +45,20 @@ public class FocusService extends IntentService{
     @Override
     protected void onHandleIntent(Intent intent) {
 
+        Log.d(TAG, "onHandleIntent: " + "get" + intent.getStringExtra("code"));
+
         code = intent.getStringExtra("code");
+        ArrayList<CharSequence> codes = new ArrayList<>();
 
         try {
             List<Focus> body = CloudAPIService.getInstance().getFocus(code).execute().body();
 
-            ArrayList<CharSequence> codes = new ArrayList<>();
             for(Focus focus:body){
                 codes.add(focus.getClassCode());
             }
-            Log.e("TTT",codes.size() + " -" + codes.toString());
-            sendCode(codes);
+            Log.d(TAG, "onHandleIntent: " + codes.size() + " -" + codes.toString());
+            Log.e("TAG",codes.size() + " -" + codes.toString());
+
         } catch (SocketTimeoutException e) {
             mExceptionCode = Constants.NETWORK_EXCEPTION.TIMEOUT;
         } catch (UnknownHostException e) {
@@ -65,6 +68,7 @@ public class FocusService extends IntentService{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        sendCode(codes);
     }
 
     private void sendCode(ArrayList<CharSequence> codeList){

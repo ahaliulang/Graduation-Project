@@ -24,7 +24,7 @@ import retrofit2.http.Part;
  * Created by lenovo on 2016/10/31.
  */
 public interface CloudAPI {
-    //API的url 123.207.246.137 -- 192.168.0.35:8080
+    //API的url 123.207.246.137 -- 192.168.0.35:8080 -- 10.168.122.181:8080
     String BASE_URL = "http://123.207.246.137/CloudClass_Server/servlet/";
 
     @GET("CourseServlet")

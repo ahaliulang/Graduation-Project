@@ -38,7 +38,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="旧密码：" />
+            android:text="原密码：" />
 
         <EditText
             android:id="@+id/old_pwd"
@@ -89,7 +89,24 @@
             android:singleLine="true" />
     </LinearLayout>
 
-    <Button
+    <ProgressBar
+        android:layout_marginTop="8dp"
+        android:id="@+id/pb_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:indeterminateDuration="1200"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/tv_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="正在修改中..."
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"/>
+
+  <!--  <Button
         android:id="@+id/change"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -100,6 +117,6 @@
         android:textColor="@color/colorWhite"
         android:textSize="25sp"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"/>
+        android:layout_marginRight="15dp"/>-->
 
 </LinearLayout>

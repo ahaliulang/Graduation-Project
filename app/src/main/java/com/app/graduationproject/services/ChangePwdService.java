@@ -51,7 +51,7 @@ public class ChangePwdService extends IntentService {
         old_passwordd = intent.getStringExtra(ChangePwdActivity.EXTRA_OLD_PASSWORD);
         new_password = intent.getStringExtra(ChangePwdActivity.EXTRA_NEW_PASSWORD);
         Log.e("code+password",code+  "=== " +new_password);
-        int status = 0;
+        int status = -1;
         Response<ChangePwdStatus> execute = null;
         try {
             execute = CloudAPIService.getInstance().changePwd(code, new_password,old_passwordd).execute();
