@@ -78,6 +78,7 @@ public class VideoDetailActivity extends BaseActivity {
                 Intent intent = new Intent(VideoDetailActivity.this,ShowVideoActivity.class);
                 intent.putExtra(ShowVideoActivity.EXTRA_VIDEO_URL,
                         video.getUrl());
+                intent.putExtra(ShowVideoActivity.EXTRA_VIDEO_NAME,video.getName());
                 startActivity(intent);
             }
         });

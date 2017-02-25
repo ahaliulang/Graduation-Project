@@ -31,7 +31,10 @@ public class ShowVideoActivity extends AppCompatActivity implements MediaPlayer.
     public static final String EXTRA_VIDEO_URL = "video_url";
   //  public static final String ACTION_UPDATE_URL = "com.app.graduationproject.activity.update_url";
 
+    public static final String EXTRA_VIDEO_NAME = "video_name";
+
     private Uri uri;
+    private String video_name;
     private ProgressBar pb;
     private TextView downloadRateView, loadRateView;
     private MediaController mMediaController;
@@ -46,6 +49,7 @@ public class ShowVideoActivity extends AppCompatActivity implements MediaPlayer.
 
 
         video_url = getIntent().getStringExtra(EXTRA_VIDEO_URL);
+        video_name = getIntent().getStringExtra(EXTRA_VIDEO_NAME);
         //定义全屏参数
         int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
         //获得当前窗体对象
@@ -76,7 +80,7 @@ public class ShowVideoActivity extends AppCompatActivity implements MediaPlayer.
     }
 
     private void initData() {
-        mCustomMediaController.setVideoName("测试播放");
+        mCustomMediaController.setVideoName(video_name);
         mVideoView.setVideoURI(uri);//设置视频播放地址
         mVideoView.setMediaController(mCustomMediaController);
         mVideoView.setVideoQuality(MediaPlayer.VIDEOQUALITY_HIGH);//高画质
