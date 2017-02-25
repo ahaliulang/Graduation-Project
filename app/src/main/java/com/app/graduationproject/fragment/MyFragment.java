@@ -132,6 +132,12 @@ public class MyFragment extends Fragment {
         Log.e(TAG, "onActivityCreated: ");
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ishow = mSharedPreferences.getBoolean("show", false);
+        showLoginLayout(ishow);
+    }
 
     private void initListener() {
         loginLayout.setOnClickListener(new View.OnClickListener() {

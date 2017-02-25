@@ -120,8 +120,9 @@ public class LoginActivity extends BaseActivity {
                 editor.clear();
                 editor.putString("accountId",code); //保存账号
                 editor.putString("name",name); //保存昵称
+                editor.putBoolean("show", true);
                 editor.commit();
-                //LoginActivity.this.setResult(RESULT_OK);
+                LoginActivity.this.setResult(RESULT_OK);
                 Intent intentName = new Intent();
                 intentName.putExtra("name",name);
                 LoginActivity.this.setResult(RESULT_OK,intentName);

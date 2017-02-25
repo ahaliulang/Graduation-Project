@@ -129,6 +129,7 @@ public class DetailSecondFragment extends Fragment{
                 Video video = videos.get(position);
                 Intent intent = new Intent(getActivity(), ShowVideoActivity.class);
                 intent.putExtra(ShowVideoActivity.EXTRA_VIDEO_URL,video.getUrl());
+                intent.putExtra(ShowVideoActivity.EXTRA_VIDEO_NAME,video.getName());
                 startActivity(intent);
 
                 for(int i=0;i<adapterView.getCount();i++){
